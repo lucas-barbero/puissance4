@@ -30,3 +30,12 @@ afficherplateau(board(X)) :- write("1 2 3 4 5 6 7"), nl, transpose(X, Y), affich
 
 puissance4:- initial(X), afficherplateau(X).
 
+
+afficherElement([]) :- write(' ').
+afficherElement(E) :- write('E').
+
+afficherListe([]) :- write('|').
+afficherListe([E|L]) :- write('|'), afficherElement(E), afficherListe(L).
+
+afficherGrille(_,0).
+afficherGrille([F|R],N) :- N > 0,  N is N-1, afficherListe(F), nl, afficherGrille(R,N).
