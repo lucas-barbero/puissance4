@@ -1,3 +1,4 @@
+% :- use_module(library(clpfd)).
 
 initial(board([['-','-','-','-','-','-'],
 	       ['-','-','-','-','-','-'],
@@ -18,7 +19,7 @@ afficherGrille([A|B]) :- afficherListe(A), write('\n'), afficherGrille(B).
 
 %transpose la première colonne de la matrice d'entrée, on obtient donc uniquement la première ligne de la matrice voulue
 transpose_col([], [], []).
-transpose_col([[H|T]|R], [G|HF], [T|TF]) :- transpose_col(R, HF, TF).
+transpose_col([[H|T]|R], [H|HF], [T|TF]) :- transpose_col(R, HF, TF).
 
 %transpose tout une matrice en appelant récursivement transpose_col
 transpose([[]|_], []).
