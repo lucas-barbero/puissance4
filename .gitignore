@@ -2,3 +2,5 @@
 old.pl
 
 *.pl~
+.vscode/launch.json
+.vscode/tasks.json
