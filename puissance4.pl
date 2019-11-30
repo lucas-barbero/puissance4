@@ -67,34 +67,28 @@ getNthElem([F|R], N, [L|LF]) :- length(F,Long),
 				getNthElem(R, N, LF).
 
 
+ % Renvoie le nième élément de la liste.
+ % Renvoie '-' si N est
+ % supérieur à la longueur de la liste.
 
-/**
- * Renvoie le nième élément de la liste.
- * Renvoie '-' si N est
- * supérieur à la longueur de la liste.
- *
- */
 niemeElement(N, Ligne, '-'):- \+ nth1(N, Ligne, _).
 niemeElement(N, Ligne, Couleur):- nth1(N, Ligne, Couleur).
 
 
-/**
- * Verifie que la SousListe est comprise dans la Liste.
- *
- * Appeler cette fonction avec une variable generale à la place de SousListe
- * permet de lister toutes les sous listes de Liste.
- */
-estSousListe(SousListe,Liste):-append(SousListe,_,Liste).
-estSousListe(SousListe,[_|Queue]):-estSousListe(SousListe,Queue).
+ %
+ % Verifie que la SousListe est comprise dans la Liste.
+ %
+ % Appeler cette fonction avec une variable generale à la place de SousListe
+ % permet de lister toutes les sous listes de Liste. %
+ estSousListe(SousListe,Liste):-append(SousListe,_,Liste).
+ estSousListe(SousListe,[_|Queue]):-estSousListe(SousListe,Queue).
 
 
 genererLigne(N, Grille, Ligne):- maplist(niemeElement(N), Grille, Ligne).
 
 
-/**
- *Conditions de victoir pour les joueurs
- *
- */
+
+% Conditions de victoir pour les joueurs
 victoireVerticale([Colonne|_],Couleur):- estSousListe([Couleur,Couleur,Couleur,Couleur],
                                                       Colonne),!.
 victoireVerticale([_|SousGrille],Couleur):- victoireVerticale(SousGrille,Couleur).
@@ -112,14 +106,14 @@ victoireHorizontale(Grille, Couleur):- victoireHorizontaleRec(1, Grille, Couleur
 
 
 % On cherche le pattern H1 H2 H3 H4 dans la grille tel que ces 4 valeurs soient la tête d'une sous liste de la grille, on regarde ensuite que ces têtes soient positionnées en forme de diago de gauche vers la droite
-victoireDiagonale1(Grille,Couleur):- append(_,[H1,H2,H3,H4|_],Grille), 
-		   append(I1,[Couleur|_],H1), 
+victoireDiagonale1(Grille,Couleur):- append(_,[H1,H2,H3,H4|_],Grille),
+		   append(I1,[Couleur|_],H1),
 		   append(I2,[Couleur|_],H2),
-		   append(I3,[Couleur|_],H),
+		   append(I3,[Couleur|_],H3),
 		   append(I4,[Couleur|_],H4),
 		   length(I1,M1), length(I2,M2), length(I3,M3), length(I4,M4),
 		   M2 is M1+1, M3 is M2+1, M4 is M3+1.
-		   
+
 % On cherche le pattern H1 H2 H3 H4 dans la grille tel que ces 4 valeurs soient la tête d'une sous liste de la grille, on regarde ensuite que ces têtes soient positionnées en forme de diago de droite vers la gauche
 victoireDiagonale2(Grille,Couleur):- append(_,[H1,H2,H3,H4|_],Grille),
 		   append(I1,[Couleur|_],H1),
