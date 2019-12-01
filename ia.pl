@@ -29,7 +29,13 @@ coupDefensif(C,Plateau,Couleur,NewPlateau):- adversaire(Couleur,A), coupGagnant(
 
 % Verifie que le coup qu''on fait ne va pas faire gagner l''adversaire
 %C : Colonne dans laquelle on joue X:Colonne qui fait gagner l''adversaire si on joue en C
-coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(1,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P).
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(1,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=1.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(2,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=2.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(3,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=3.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(4,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=4.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(5,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=5.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(6,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=6.
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(6,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P), C=7.
 
 
 
