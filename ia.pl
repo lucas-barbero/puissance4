@@ -1,6 +1,9 @@
 
 :- consult(puissance4).
 
+adversaire('X','O').
+adversaire('O','X').
+
 % place le pion sur la colonne
 move(Colonne,Plateau, NewPlateau) :- enregistrerCoup(Colonne,Plateau,'X', NewPlateau).
 % vrai si placement possible sur la colonne (TODO)
@@ -12,8 +15,35 @@ chose_move(Plateau, 'X', Move) :-
     evaluate_and_choose(Moves,Plateau,(nil,-1000),Move).
 
 
+% Coup permettant de gagner
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(1,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=1.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(2,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=2.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(3,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=3.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(4,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=4.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(5,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=5.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(6,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=6.
+coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(7,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=7.
+
+% Si un coup direct permettrait Ã  l''adversaire de gagner on le fait 
+coupDefensif(C,Plateau,Couleur,NewPlateau):- adversaire(Couleur,A), coupGagnant(C,Plateau,A,P), enregistrerCoup(C,Plateau,Couleur,NewPlateau).
+
+% Verifie que le coup qu''on fait ne va pas faire gagner l''adversaire
+%C : Colonne dans laquelle on joue X:Colonne qui fait gagner l''adversaire si on joue en C
+coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrerCoup(1,Plateau,Couleur,NewPlateau), coupGagnant(X,NewPlateau,A,P).
+
+
+
+
+
+
+
+
+
+
+
+
 /*
- * choisit le BestMove dans l'ensemble des Moves à partir de la Position
+ * choisit le BestMove dans l'ensemble des Moves Ã  partir de la Position
  * courante;
  * Moves : colonnes ou il est possible de jouer
  * Position : Plateau de jeu
@@ -35,7 +65,7 @@ update(Move , Value, Record, newRecord) :-
     Value =< ValueRecord,
     newRecord = Record.
 
-% update si supérieur
+% update si supÃ©rieur
 update(Move , Value, Record, newRecord) :-
     Record = (MoveRecord, ValueRecord),
     Value > ValueRecord,
