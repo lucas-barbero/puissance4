@@ -1,7 +1,7 @@
 
 
 %afficher le plateau de jeu
-afficherplateau(X) :- write("1 2 3 4 5 6 7"), nl, afficherGrille(X,7).
+afficherplateau(X) :- write("1 2 3 4 5 6 7"), nl, afficherGrille(X,6).
 
 
 %lecture de la colonne sur laquelle jouer par le joueur J
@@ -21,20 +21,34 @@ colonneCorrecte(X) :-
 jouerTour('X',B):- victoire(B,'O'), write("Victoire du joueur O").
 jouerTour('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 
-jouerTour('X',B):-     lireColonne('X',C),
+jouerTour('X',B):-     repeat,
+                       lireColonne('X',C),
+                       verifierCoup(C,B),
                        enregistrerCoup(C,B,'X', NB),
                        afficherplateau(NB),
                        jouerTour('O',NB).
 
-jouerTour('O',B):-     lireColonne('O',C),
+jouerTour('O',B):-    repeat,
+                       lireColonne('O',C),
+                       verifierCoup(C,B),
                        enregistrerCoup(C,B,'O', NB),
                        afficherplateau(NB),
                        jouerTour('X',NB).
 
+% verification de la taille de liste pour savoir si on peut encore y
+% poser un jeton
+verifierCoup(C,B) :-     (
+    nth1(C,B,L),
+        length(L,I),
+        I < 6
+     -> true
+     ;  writeln('Coup impossible place inssuffisante'),
+        afficherplateau(B),
+        fail
+    ).
 % Placement du jeton du joueur J sur la colonne C sur le board B=[L|G],
 % avec NB le nouveau board apr�s le coup
-enregistrerCoup(1, [L|G], J, _):- length(L,N), N >= 7, write('Coup impossible, place insufisante'), nl, jouerTour(J,[L|G]).
-enregistrerCoup(1, [L|G], J, NB):- append(L,[J],M), NB=[M|G], !.
+enregistrerCoup(1, [L|G], J, NB):- append(L,[J],M), NB=[M|G].
 enregistrerCoup(N, [T|X], J, [T|G]):-
                                        N1 is
                                        N-1,
