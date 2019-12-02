@@ -123,18 +123,14 @@ value(Plateau, Value) :- Value=0.
 
 % renvoie le nombre de pions sur les colonnes ponderes par la position
 % (plus fort au milieu)
-value_col(Plateau, 7, Value) :- Plateau = [Colonne|Queue], Value=0, value_col(Queue, 6, Value), !.
+value_col(Plateau, 7, Value) :- Plateau = [Colonne|Queue], value_col(Queue, 6, Value).
 
-value_col(Plateau, 6, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+Long, value_col(Queue, 5, Value1), ! .
-value_col(Plateau, 5, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+2*Long,value_col(Queue, 4, Value1), ! .
-
-value_col(Plateau, 4, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+3*Long, value_col(Queue, 3, Value1),! .
-
-value_col(Plateau, 3, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+2*Long, value_col(Queue, 2, Value1), ! .
-
-value_col(Plateau, 2, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+Long, value_col(Queue, 1, Value1), ! .
-
-value_col(Plateau, 1, Value) .
+value_col(Plateau, 6, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long),value_col(Queue, 5, Value1), Value is Value1+Long .
+value_col(Plateau, 5, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long),value_col(Queue, 4, Value1), Value is Value1+2*Long .
+value_col(Plateau, 4, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 3, Value1), Value is Value1+3*Long .
+value_col(Plateau, 3, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 2, Value1), Value is Value1+2*Long.
+value_col(Plateau, 2, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 1, Value1), Value is Value1+Long.
+value_col(Plateau, 1, Value) :- Value = 0 .
 
 
 
