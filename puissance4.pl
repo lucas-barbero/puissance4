@@ -1,5 +1,4 @@
 
-
 %afficher le plateau de jeu
 afficherplateau(X) :- write(" 1 2 3 4 5 6 7"), nl, afficherGrille(X,6).
 
@@ -37,6 +36,11 @@ jouerTour('O',B):-    repeat,
                        enregistrerCoup(C,B,'O', NB),
                        afficherplateau(NB),
                        jouerTour('X',NB).
+
+
+
+
+	
 
 % verification de la taille de liste pour savoir si on peut encore y
 % poser un jeton
@@ -156,3 +160,5 @@ victoire(Grille, Couleur) :- victoireDiagonale2(Grille,Couleur).
 %lancement du jeu
 puissance4:- afficherplateau([[],[],[],[],[],[],[]]),
              jouerTour('X',[[],[],[],[],[],[],[]]).
+			 
+			 
