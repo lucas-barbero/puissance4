@@ -1,7 +1,7 @@
 
 
 %afficher le plateau de jeu
-afficherplateau(X) :- write("1 2 3 4 5 6 7"), nl, afficherGrille(X,6).
+afficherplateau(X) :- write(" 1 2 3 4 5 6 7"), nl, afficherGrille(X,6).
 
 
 %lecture de la colonne sur laquelle jouer par le joueur J
@@ -15,12 +15,15 @@ colonneCorrecte(X) :-
         X >= 1,
         X =< 7
      -> true
-     ;  writeln('Le numero de colonne doit etre compris entre 1 et 7'),
+     ;  
+		writeln('Le numero de colonne doit etre compris entre 1 et 7'),
         fail
     ).
+% Tour des joueurs, on verifie la victoire du joueur opposé avant
 jouerTour('X',B):- victoire(B,'O'), write("Victoire du joueur O").
 jouerTour('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 
+% On demande de choisir la colonne sur laquelle jouer tant que cette dernière n'est pas valide
 jouerTour('X',B):-     repeat,
                        lireColonne('X',C),
                        verifierCoup(C,B),
@@ -46,13 +49,13 @@ verifierCoup(C,B) :-     (
         afficherplateau(B),
         fail
     ).
-% Placement du jeton du joueur J sur la colonne C sur le board B=[L|G],
+% Placement du jeton du joueur J sur la colonne C sur le board B=[H|Q],
 % avec NB le nouveau board apr�s le coup
-enregistrerCoup(1, [L|G], J, NB):- append(L,[J],M), NB=[M|G].
-enregistrerCoup(N, [T|X], J, [T|G]):-
+enregistrerCoup(1, [H|Q], J, NB):- append(H,[J],M), NB=[M|Q].
+enregistrerCoup(N, [T|X], J, [T|Q]):-
                                        N1 is
                                        N-1,
-						enregistrerCoup(N1, X, J, G).
+						enregistrerCoup(N1, X, J, Q).
 
 
 
