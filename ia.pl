@@ -23,31 +23,31 @@ eq(X,Y) :- Y=:=X, !.
 
 testPlateau(Plateau,Couleur,Etat):- victoire(Plateau,Couleur), Etat = 1.
 testPlateau(Plateau,Couleur,Etat):- adversaire(Couleur,Adv), victoire(Plateau,Adv), Etat = -1.
-testPlateau(Plateau,Couleur,Etat):- Etat = 0.
+testPlateau(_,_,Etat):- Etat = 0.
 
 
 %Donne la liste des valeurs des coups suivants
 
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- false,
+listeValeur(_,_,_,_,Liste):- false,
                     Liste=[-1].
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                     eq(Couche,Profondeur),
                     testPlateau(Plateau,Couleur,E1), Liste=[E1].
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+listeValeur(Plateau,Couleur,_,_,Liste):-
                     testPlateau(Plateau,Couleur,E1),
                     eq(E1,1), Liste=[1].
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+listeValeur(Plateau,Couleur,_,_,Liste):-
                     testPlateau(Plateau,Couleur,E1),
                     eq(E1,-1), Liste=[-1].
 
 
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
-                                                        \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
+                                                        \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,_),
     enregistrerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
     enregistrerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
     enregistrerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
@@ -132,8 +132,23 @@ coupPerdant(C,Plateau,Couleur,NewPlateau,X):- adversaire(Couleur,A), enregistrer
 
 
 
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,1), nth1(N,Liste,1),  enregistrerCoup(N,Plateau,Couleur,NewPlateau).
 
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(4,Liste,0),  enregistrerCoup(4,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(3,Liste,0),  enregistrerCoup(3,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(5,Liste,0),  enregistrerCoup(5,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(2,Liste,0),  enregistrerCoup(2,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(6,Liste,0),  enregistrerCoup(6,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(1,Liste,0),  enregistrerCoup(1,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(7,Liste,0),  enregistrerCoup(7,Plateau,Couleur,NewPlateau).
 
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(4,Liste,-1),  enregistrerCoup(4,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(3,Liste,-1),  enregistrerCoup(3,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(5,Liste,-1),  enregistrerCoup(5,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(2,Liste,-1),  enregistrerCoup(2,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(6,Liste,-1),  enregistrerCoup(6,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(1,Liste,-1),  enregistrerCoup(1,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(7,Liste,-1),  enregistrerCoup(7,Plateau,Couleur,NewPlateau).
 
 
 /*
@@ -183,3 +198,22 @@ value_col(Plateau, 3, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long)
 value_col(Plateau, 2, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), Value1 is Value+Long, value_col(Queue, 1, Value1), ! .
 
 value_col(Plateau, 1, Value) .
+
+
+
+jouerTourIA('O',B) :-
+					jouerCoupIA(B,'O',NB),
+					afficherplateau(NB),
+					jouerTourIA('X',B).
+
+jouerTourIA('X',B) :-
+					jouerCoupIA(B,'X',NB),
+					afficherplateau(NB),
+					jouerTourIA('O',B).
+
+%lancement du jeu
+puissance4IA:- afficherplateau([[],[],[],[],[],[],[]]),
+               jouerCoupIA([[],[],[],[],[],[],[]],'X',NB),
+               afficherplateau(NB).
+
+
