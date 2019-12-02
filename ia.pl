@@ -25,128 +25,90 @@ testPlateau(Plateau,Couleur,Etat):- victoire(Plateau,Couleur), Etat = 1.
 testPlateau(Plateau,Couleur,Etat):- adversaire(Couleur,Adv), victoire(Plateau,Adv), Etat = -1.
 testPlateau(_,_,Etat):- Etat = 0.
 
+testerCoup(C,Plateau,Couleur,NewPlateau):- nth1(C,Plateau,L), length(L,I), I < 8, enregistrerCoup(C,Plateau,Couleur,NewPlateau).
+testerCoup(C,Plateau,Couleur,NewPlateau):- NewPlateau = [4,0,4].
 
 %Donne la liste des valeurs des coups suivants
 
 
 listeValeur(_,_,_,_,Liste):- false,
-                    Liste=[-1].
+                    Liste=[-1], !.
+
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+                   Plateau == [4,0,4], Liste=[-1], !.
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                     eq(Couche,Profondeur),
-                    testPlateau(Plateau,Couleur,E1), Liste=[E1].
+                    testPlateau(Plateau,Couleur,E1), Liste=[E1], !.
 
 listeValeur(Plateau,Couleur,_,_,Liste):-
                     testPlateau(Plateau,Couleur,E1),
-                    eq(E1,1), Liste=[1].
+                    eq(E1,1), Liste=[1], !.
 
 listeValeur(Plateau,Couleur,_,_,Liste):-
                     testPlateau(Plateau,Couleur,E1),
-                    eq(E1,-1), Liste=[-1].
-
+                    eq(E1,-1), Liste=[-1], !.
 
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                                                         \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,_),
-    enregistrerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
-    enregistrerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
-    enregistrerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
-    enregistrerCoup(4,Plateau,Couleur,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), minListe(L4,M4),append(Li3,[M4],Li4),
-    enregistrerCoup(5,Plateau,Couleur,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), minListe(L5,M5),append(Li4,[M5],Li5),
-    enregistrerCoup(6,Plateau,Couleur,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), minListe(L6,M6),append(Li5,[M6],Li6),
-    enregistrerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Liste).
+    testerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
+    testerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
+    testerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
+    testerCoup(4,Plateau,Couleur,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), minListe(L4,M4),append(Li3,[M4],Li4),
+    testerCoup(5,Plateau,Couleur,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), minListe(L5,M5),append(Li4,[M5],Li5),
+    testerCoup(6,Plateau,Couleur,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), minListe(L6,M6),append(Li5,[M6],Li6),
+    testerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Liste), !.
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                                                         pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
-    enregistrerCoup(1,Plateau,Adv,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), maxListe(L1,M1),Li1=[M1],
-    enregistrerCoup(2,Plateau,Adv,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), maxListe(L2,M2),append(Li1,[M2],Li2),
-    enregistrerCoup(3,Plateau,Adv,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), maxListe(L3,M3),append(Li2,[M3],Li3),
-    enregistrerCoup(4,Plateau,Adv,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), maxListe(L4,M4),append(Li3,[M4],Li4),
-    enregistrerCoup(5,Plateau,Adv,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), maxListe(L5,M5),append(Li4,[M5],Li5),
-    enregistrerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
-    enregistrerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Liste).
+    testerCoup(1,Plateau,Adv,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), maxListe(L1,M1),Li1=[M1],
+    testerCoup(2,Plateau,Adv,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), maxListe(L2,M2),append(Li1,[M2],Li2),
+    testerCoup(3,Plateau,Adv,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), maxListe(L3,M3),append(Li2,[M3],Li3),
+    testerCoup(4,Plateau,Adv,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), maxListe(L4,M4),append(Li3,[M4],Li4),
+    testerCoup(5,Plateau,Adv,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), maxListe(L5,M5),append(Li4,[M5],Li5),
+    testerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
+    testerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Liste), !.
 
 
-% Pour chaque coup regarder listeValeur (Plateau,Couleur,1,6,Liste)
-% Profondeur 6 c''est bien au dessus sest trop lent et 1 car on veut le
-% coup d'apres
+%Pour chaque coup regarder listeValeur (Plateau,Couleur,1,5,Liste) Profondeur 5 c''est bien au dessus sest trop lent et 1 car on veut le coup d''apres
 
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(4,Liste,0),  enregistrerCoup(4,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(3,Liste,0),  enregistrerCoup(3,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(5,Liste,0),  enregistrerCoup(5,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(2,Liste,0),  enregistrerCoup(2,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(6,Liste,0),  enregistrerCoup(6,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(1,Liste,0),  enregistrerCoup(1,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,0), nth1(7,Liste,0),  enregistrerCoup(7,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Couleur,NewPlateau) :-  maxListe(Liste,M), eq(M,1), nth1(N,Liste,1),  enregistrerCoup(N,Plateau,Couleur,NewPlateau), !.
 
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(4,Liste,-1),  enregistrerCoup(4,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(3,Liste,-1),  enregistrerCoup(3,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(5,Liste,-1),  enregistrerCoup(5,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(2,Liste,-1),  enregistrerCoup(2,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(6,Liste,-1),  enregistrerCoup(6,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(1,Liste,-1),  enregistrerCoup(1,Plateau,Couleur,NewPlateau).
-jouerCoupIA(Plateau,Couleur,NewPlateau) :- listeValeur(Plateau,Couleur,1,6,Liste), maxListe(Liste,M), eq(M,-1), nth1(7,Liste,-1),  enregistrerCoup(7,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(4,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(4,Liste,M), enregistrerCoup(4,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(3,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(3,Liste,M), enregistrerCoup(3,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(5,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(5,Liste,M), enregistrerCoup(5,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(2,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(2,Liste,M), enregistrerCoup(2,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(6,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(6,Liste,M), enregistrerCoup(6,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(1,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(1,Liste,M), enregistrerCoup(1,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :-   nth1(7,Plateau,L), length(L,I), I < 6, maxListe(Liste,M), nth1(7,Liste,M), enregistrerCoup(7,Plateau,Couleur,NewPlateau), !.
 
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(4,Liste,-1),  enregistrerCoup(4,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(3,Liste,-1),  enregistrerCoup(3,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(5,Liste,-1),  enregistrerCoup(5,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(2,Liste,-1),  enregistrerCoup(2,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(6,Liste,-1),  enregistrerCoup(6,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(1,Liste,-1),  enregistrerCoup(1,Plateau,Couleur,NewPlateau).
+jouerCoupIA(Plateau,Liste,Couleur,NewPlateau) :- maxListe(Liste,M), eq(M,-1), nth1(7,Liste,-1),  enregistrerCoup(7,Plateau,Couleur,NewPlateau), !.
 
-/*
- * choisit le BestMove dans l'ensemble des Moves à partir de la Position
- * courante;
- * Moves : colonnes ou il est possible de jouer
- * Position : Plateau de jeu
- * Record enregistre le meilleur mouvement courant : paire (Move, Value)
- * BestMove : renvoie la colonne qui correspond au Record final
- */
-
-evaluate_and_choose([Move|Moves], Plateau, Record, BestMove) :-
-    move(Move,Plateau, newPlateau),
-    value(newPlateau, Value),
-    update(Move , Value, Record, newRecord),
-    evaluate_and_choose(Moves, Plateau, newRecord, BestMove).
-
-evaluate_and_choose([], Position, (Move,Value), Move) .
-
-% n'update pas si value est inf a celle du Record
-update(Move , Value, Record, newRecord) :-
-    Record = (MoveRecord, ValueRecord),
-    Value =< ValueRecord,
-    newRecord = Record.
-
-% update si supérieur
-update(Move , Value, Record, newRecord) :-
-    Record = (MoveRecord, ValueRecord),
-    Value > ValueRecord,
-    newRecord = (Move,Value).
-
-value(Plateau, Value) :- victoire(Plateau, ('X')), Value=1000.
-value(Plateau, Value) :- victoire(Plateau, ('O')), Value='-1000'.
-value(Plateau, Value) :- Value=0.
-
-% renvoie le nombre de pions sur les colonnes ponderes par la position
-% (plus fort au milieu)
-value_col(Plateau, 7, Value) :- Plateau = [Colonne|Queue], value_col(Queue, 6, Value).
-
-value_col(Plateau, 6, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long),value_col(Queue, 5, Value1), Value is Value1+Long .
-value_col(Plateau, 5, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long),value_col(Queue, 4, Value1), Value is Value1+2*Long .
-value_col(Plateau, 4, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 3, Value1), Value is Value1+3*Long .
-value_col(Plateau, 3, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 2, Value1), Value is Value1+2*Long.
-value_col(Plateau, 2, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long), value_col(Queue, 1, Value1), Value is Value1+Long.
-value_col(Plateau, 1, Value) :- Value = 0 .
-
-
+setProfondeur(Plateau,Profondeur,NewProfondeur) :- nth1(4,Plateau,L), length(L,I), I > 6, nth1(3,Plateau,L1), length(L1,I1), I1 > 6, NewProfondeur is Profondeur - 1.
+setProfondeur(Plateau,Profondeur,NewProfondeur) :- NewProfondeur is Profondeur.
 
 jouerTourIA('O',B) :-
-					jouerCoupIA(B,'O',NB),
-					afficherplateau(NB),
-					jouerTourIA('X',B).
+                    setProfondeur(B,5,P),
+                    listeValeur(B,'O',1,P,Liste),
+                    jouerCoupIA(B,Liste,'O',NB),
+                    afficherplateau(NB),
+                    jouerTourIA('X',NB).
 
-jouerTourIA('X',B) :-
-					jouerCoupIA(B,'X',NB),
-					afficherplateau(NB),
-					jouerTourIA('O',B).
+jouerTourIA('X',B1) :-
+                    setProfondeur(B,5,P),
+                    listeValeur(B1,'X',1,P,Liste),
+                    jouerCoupIA(B1,Liste,'X',NC),
+                    afficherplateau(NC),
+                    jouerTourIA('O',NC).
 
 %lancement du jeu
 puissance4IA:- afficherplateau([[],[],[],[],[],[],[]]),
-               jouerCoupIA([[],[],[],[],[],[],[]],'X',NB),
-               afficherplateau(NB).
-
-
+                    jouerTourIA('X',[[],[],[],[],[],[],[]]).
+               
