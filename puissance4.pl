@@ -102,15 +102,20 @@ genererLigne(N, Grille, Ligne):- maplist(niemeElement(N), Grille, Ligne).
 
 
 
-% Conditions de victoir pour les joueurs
+% ----- Conditions de victoire pour les joueurs -----
+
+
+% Teste si il y a 4 même couleur sur une colonne
 victoireVerticale([Colonne|_],Couleur):- estSousListe([Couleur,Couleur,Couleur,Couleur],
                                                       Colonne),!.
 victoireVerticale([_|SousGrille],Couleur):- victoireVerticale(SousGrille,Couleur).
 
+% Teste si il y a 4 même couleur sur une ligne,
+% Pour cela, il récupéres chaques ligne de niveau N avec génererLigne
 victoireHorizontaleRec(N, Grille, Couleur):- genererLigne(N, Grille, Ligne),
                                              estSousListe([Couleur,Couleur,Couleur,Couleur],Ligne),
                                              !.
-
+                                             
 victoireHorizontaleRec(N, Grille, Couleur):- N < 7,
                                              N1 is N + 1,
                                              victoireHorizontaleRec(N1, Grille, Couleur).
@@ -146,4 +151,3 @@ victoire(Grille, Couleur) :- victoireDiagonale2(Grille,Couleur).
 %lancement du jeu
 puissance4:- afficherplateau([[],[],[],[],[],[],[]]),
              jouerTour('X',[[],[],[],[],[],[],[]]).
-
