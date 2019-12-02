@@ -108,27 +108,31 @@ jouerTourIA('X',B1) :-
                     afficherplateau(NC),
                     jouerTourIA('O',NC).
 jouerTourIAJoueur('O',B) :-
-				    jouerCoupIA(B,'O',NB),
-					jouerTourJoueurIA('X',NB).
-					afficherplateau(NB),
-				    jouerCoupIA(B,'X',NB),
+				    setProfondeur(B,5,P),
+                    listeValeur(B,'O',1,P,Liste),
+                    jouerCoupIA(B,Liste,'O',NB),
+                    afficherplateau(NB),
+                    jouerTourJoueurIA('X',NB).
 jouerTourIAJoueur('X',B) :-
-					afficherplateau(NB),
-					jouerTourJoueurIA('O',NB).
-jouerTourJoueurIA('O',B) :-
+				    setProfondeur(B,5,P),
+                    listeValeur(B,'X',1,P,Liste),
+                    jouerCoupIA(B,Liste,'X',NB),
+                    afficherplateau(NB),
+                    jouerTourJoueurIA('O',NB).
+					
+jouerTourJoueurIA('O',B) :- repeat,
 							lireColonne('O',C),
-							repeat,
 							verifierCoup(C,B),
 							enregistrerCoup(C,B,'O', NB),
-							jouerTourIAJoueur('X',NB).
 							afficherplateau(NB),
 							jouerTourIAJoueur('O',NB).
-							afficherplateau(NB),
-							enregistrerCoup(C,B,'X', NB),
-							verifierCoup(C,B),
+							
+jouerTourJoueurIA('X',B) :- repeat,
 							lireColonne('X',C),
-jouerTourJoueurIA('X',B) :-
-							repeat,
+							verifierCoup(C,B),
+							enregistrerCoup(C,B,'X', NB),
+							afficherplateau(NB),
+							jouerTourIAJoueur('O',NB).
 
 
 %lancement du jeu
