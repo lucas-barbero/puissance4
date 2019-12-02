@@ -107,8 +107,36 @@ jouerTourIA('X',B1) :-
                     jouerCoupIA(B1,Liste,'X',NC),
                     afficherplateau(NC),
                     jouerTourIA('O',NC).
+jouerTourIAJoueur('O',B) :-
+				    jouerCoupIA(B,'O',NB),
+					jouerTourJoueurIA('X',NB).
+					afficherplateau(NB),
+				    jouerCoupIA(B,'X',NB),
+jouerTourIAJoueur('X',B) :-
+					afficherplateau(NB),
+					jouerTourJoueurIA('O',NB).
+jouerTourJoueurIA('O',B) :-
+							lireColonne('O',C),
+							repeat,
+							verifierCoup(C,B),
+							enregistrerCoup(C,B,'O', NB),
+							jouerTourIAJoueur('X',NB).
+							afficherplateau(NB),
+							jouerTourIAJoueur('O',NB).
+							afficherplateau(NB),
+							enregistrerCoup(C,B,'X', NB),
+							verifierCoup(C,B),
+							lireColonne('X',C),
+jouerTourJoueurIA('X',B) :-
+							repeat,
+
 
 %lancement du jeu
 puissance4IA:- afficherplateau([[],[],[],[],[],[],[]]),
-                    jouerTourIA('X',[[],[],[],[],[],[],[]]).
-               
+               jouerTourIA('X',[[],[],[],[],[],[],[]]).
+			   
+puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
+               jouerTourJoueurIA('X',[[],[],[],[],[],[],[]]),
+               afficherplateau([[],[],[],[],[],[],[]]).
+
+

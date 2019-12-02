@@ -14,13 +14,15 @@ colonneCorrecte(X) :-
         X >= 1,
         X =< 7
      -> true
-     ;  
+     ;
 		writeln('Le numero de colonne doit etre compris entre 1 et 7'),
         fail
     ).
-% Tour des joueurs, on verifie la victoire du joueur opposé avant
+% tour des joueurs, on verifie la victoire du joueur opposé avant
 jouerTour('X',B):- victoire(B,'O'), write("Victoire du joueur O").
 jouerTour('O',B):- victoire(B,'X'), write("Victoire du joueur X").
+jouerTour(_,B):- egalite(B), write("Egalite").
+
 
 % On demande de choisir la colonne sur laquelle jouer tant que cette dernière n'est pas valide
 jouerTour('X',B):-     repeat,
@@ -37,13 +39,7 @@ jouerTour('O',B):-    repeat,
                        afficherplateau(NB),
                        jouerTour('X',NB).
 
-
-
-
-	
-
-% verification de la taille de liste pour savoir si on peut encore y
-% poser un jeton
+% verification de la taille de liste pour savoir si on peut encore y poser un jeton
 verifierCoup(C,B) :-     (
     nth1(C,B,L),
         length(L,I),
@@ -53,6 +49,7 @@ verifierCoup(C,B) :-     (
         afficherplateau(B),
         fail
     ).
+	
 % Placement du jeton du joueur J sur la colonne C sur le board B=[H|Q],
 % avec NB le nouveau board apr�s le coup
 enregistrerCoup(1, [H|Q], J, NB):- append(H,[J],M), NB=[M|Q].
@@ -63,6 +60,7 @@ enregistrerCoup(N, [T|X], J, [T|Q]):-
 
 
 
+% ----- Affichage de la grille -----
 
 afficherElement([]) :- write(' ').
 afficherElement(E) :- write(E).
@@ -90,12 +88,18 @@ getNthElem([F|R], N, [L|LF]) :- length(F,Long),
 				getNthElem(R, N, LF).
 
 
+
+
+
+
+% ----- Conditions de victoire pour les joueurs -----
+
  % Renvoie le nième élément de la liste.
  % Renvoie '-' si N est
  % supérieur à la longueur de la liste.
 
 niemeElement(N, Ligne, '-'):- \+ nth1(N, Ligne, _).
-niemeElement(N, Ligne, Couleur):- nth1(N, Ligne, Couleur).
+niemeElement(N, Ligne, J):- nth1(N, Ligne, J).
 
 
  %
@@ -103,62 +107,67 @@ niemeElement(N, Ligne, Couleur):- nth1(N, Ligne, Couleur).
  %
  % Appeler cette fonction avec une variable generale à la place de SousListe
  % permet de lister toutes les sous listes de Liste. %
+ 
+ 
  estSousListe(SousListe,Liste):-append(SousListe,_,Liste).
  estSousListe(SousListe,[_|Queue]):-estSousListe(SousListe,Queue).
 
 
-genererLigne(N, Grille, Ligne):- maplist(niemeElement(N), Grille, Ligne).
-
-
-
-% ----- Conditions de victoire pour les joueurs -----
-
-
-% Teste si il y a 4 même couleur sur une colonne
-victoireVerticale([Colonne|_],Couleur):- estSousListe([Couleur,Couleur,Couleur,Couleur],
+  genererLigne(N, B, Ligne):- maplist(niemeElement(N), B, Ligne).
+% Teste si il y a 4 même couleur représentant le joueur J sur une colonne
+  victoireVerticale([Colonne|_],J):- estSousListe([J,J,J,J],
                                                       Colonne),!.
-victoireVerticale([_|SousGrille],Couleur):- victoireVerticale(SousGrille,Couleur).
+  victoireVerticale([_|SousGrille],J):- victoireVerticale(SousGrille,J).
 
-% Teste si il y a 4 même couleur sur une ligne,
+% Teste si il y a 4 même couleur représentant le joueur J sur une ligne,
 % Pour cela, il récupéres chaques ligne de niveau N avec génererLigne
-victoireHorizontaleRec(N, Grille, Couleur):- genererLigne(N, Grille, Ligne),
-                                             estSousListe([Couleur,Couleur,Couleur,Couleur],Ligne),
+  victoireHorizontaleRec(N, B, J):- genererLigne(N, B, Ligne),
+                                             estSousListe([J,J,J,J],Ligne),
                                              !.
 
-victoireHorizontaleRec(N, Grille, Couleur):- N < 7,
+  victoireHorizontaleRec(N, B, J):- N < 7,
                                              N1 is N + 1,
-                                             victoireHorizontaleRec(N1, Grille, Couleur).
+                                             victoireHorizontaleRec(N1, B, J).
 
-victoireHorizontale(Grille, Couleur):- victoireHorizontaleRec(1, Grille, Couleur).
+  victoireHorizontale(B, J):- victoireHorizontaleRec(1, B, J).
 
 
 
 % On cherche le pattern H1 H2 H3 H4 dans la grille tel que ces 4 valeurs soient la tête d'une sous liste de la grille, on regarde ensuite que ces têtes soient positionnées en forme de diago de gauche vers la droite
-victoireDiagonale1(Grille,Couleur):- append(_,[H1,H2,H3,H4|_],Grille),
-		   append(I1,[Couleur|_],H1),
-		   append(I2,[Couleur|_],H2),
-		   append(I3,[Couleur|_],H3),
-		   append(I4,[Couleur|_],H4),
+  victoireDiagonale1(B,J):- append(_,[H1,H2,H3,H4|_],B),
+		   append(I1,[J|_],H1),
+		   append(I2,[J|_],H2),
+		   append(I3,[J|_],H3),
+		   append(I4,[J|_],H4),
 		   length(I1,M1), length(I2,M2), length(I3,M3), length(I4,M4),
 		   M2 is M1+1, M3 is M2+1, M4 is M3+1.
 
 % On cherche le pattern H1 H2 H3 H4 dans la grille tel que ces 4 valeurs soient la tête d'une sous liste de la grille, on regarde ensuite que ces têtes soient positionnées en forme de diago de droite vers la gauche
-victoireDiagonale2(Grille,Couleur):- append(_,[H1,H2,H3,H4|_],Grille),
-		   append(I1,[Couleur|_],H1),
-		   append(I2,[Couleur|_],H2),
-		   append(I3,[Couleur|_],H3),
-		   append(I4,[Couleur|_],H4),
+  victoireDiagonale2(B,J):- append(_,[H1,H2,H3,H4|_],B),
+		   append(I1,[J|_],H1),
+		   append(I2,[J|_],H2),
+		   append(I3,[J|_],H3),
+		   append(I4,[J|_],H4),
 		   length(I1,M1), length(I2,M2), length(I3,M3), length(I4,M4),
 		   M2 is M1-1, M3 is M2-1, M4 is M3-1.
+		   
 
 
-victoire(Grille, Couleur) :- victoireHorizontale(Grille,Couleur).
-victoire(Grille, Couleur) :- victoireVerticale(Grille,Couleur).
-victoire(Grille, Couleur) :- victoireDiagonale1(Grille,Couleur).
-victoire(Grille, Couleur) :- victoireDiagonale2(Grille,Couleur).
+
+victoire(B, J) :- victoireHorizontale(B,J).
+victoire(B, J) :- victoireVerticale(B,J).
+victoire(B, J) :- victoireDiagonale1(B,J).
+victoire(B, J) :- victoireDiagonale2(B,J).
+
+egalite([]).
+egalite([T|Q]) :-  length(T,L), L is 6, egalite(Q).
+
+% ----- Lancement du jeu -----
 
 %lancement du jeu
 puissance4:- afficherplateau([[],[],[],[],[],[],[]]),
              jouerTour('X',[[],[],[],[],[],[],[]]).
-			 
-			 
+
+
+% open('win.txt',append, Stream), write(Stream,'O '), close(Stream)
+
