@@ -69,6 +69,8 @@ afficherGrille(G,N) :- N > 0,  N1 is N-1,
 				afficherListe(L), write('\n'),
 				afficherGrille(G,N1).
 
+% Renvoie une liste contenant le Ne element (ou un espace) de chaque
+% liste de la grille en param
 getNthElem([], _, []).
 getNthElem([F|R], N, [L|LF]) :- length(F,Long),
 				Long >= N,
@@ -115,7 +117,7 @@ victoireVerticale([_|SousGrille],Couleur):- victoireVerticale(SousGrille,Couleur
 victoireHorizontaleRec(N, Grille, Couleur):- genererLigne(N, Grille, Ligne),
                                              estSousListe([Couleur,Couleur,Couleur,Couleur],Ligne),
                                              !.
-                                             
+
 victoireHorizontaleRec(N, Grille, Couleur):- N < 7,
                                              N1 is N + 1,
                                              victoireHorizontaleRec(N1, Grille, Couleur).

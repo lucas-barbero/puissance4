@@ -32,29 +32,29 @@ testPlateau(Plateau,Couleur,Etat):- Etat = 0.
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                     eq(Couche,Profondeur),
-                    testPlateau(Plateau,Couleur,E1), Liste=[E1].                    
+                    testPlateau(Plateau,Couleur,E1), Liste=[E1].
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-                     
-                    testPlateau(Plateau,Couleur,E1), 
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+                    testPlateau(Plateau,Couleur,E1),
                     eq(E1,1), Liste=[1].
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- 
-                    testPlateau(Plateau,Couleur,E1), 
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+                    testPlateau(Plateau,Couleur,E1),
                     eq(E1,-1), Liste=[-1].
 
 
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- 
-                                                        \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv), 
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
+                                                        \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
     enregistrerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
     enregistrerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
     enregistrerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
     enregistrerCoup(4,Plateau,Couleur,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), minListe(L4,M4),append(Li3,[M4],Li4),
     enregistrerCoup(5,Plateau,Couleur,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), minListe(L5,M5),append(Li4,[M5],Li5),
     enregistrerCoup(6,Plateau,Couleur,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), minListe(L6,M6),append(Li5,[M6],Li6),
-    enregistrerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Liste).                    
+    enregistrerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Liste).
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- 
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
                                                         pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
     enregistrerCoup(1,Plateau,Adv,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), maxListe(L1,M1),Li1=[M1],
     enregistrerCoup(2,Plateau,Adv,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), maxListe(L2,M2),append(Li1,[M2],Li2),
@@ -64,7 +64,7 @@ listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):-
     enregistrerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
     enregistrerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Liste).
 
-     
+
 %Pour chaque coup regarder listeValeur (Plateau,Couleur,1,6,Liste) Profondeur 6 c''est bien au dessus sest trop lent et 1 car on veut le coup d'apres
 % place le pion sur la colonne
 move(Colonne,Plateau, NewPlateau) :- enregistrerCoup(Colonne,Plateau,'X', NewPlateau).
@@ -86,7 +86,7 @@ coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(5,Plateau,Couleur,Ne
 coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(6,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=6.
 coupGagnant(C,Plateau,Couleur,NewPlateau):- enregistrerCoup(7,Plateau,Couleur,NewPlateau), victoire(NewPlateau,Couleur), C=7.
 
-% Si un coup direct permettrait Ã  l''adversaire de gagner on le fait 
+% Si un coup direct permettrait Ã  l''adversaire de gagner on le fait
 coupDefensif(C,Plateau,Couleur,NewPlateau):- adversaire(Couleur,A), coupGagnant(C,Plateau,A,P), enregistrerCoup(C,Plateau,Couleur,NewPlateau).
 
 % Verifie que le coup qu''on fait ne va pas faire gagner l''adversaire
@@ -144,6 +144,9 @@ value(Plateau, Value) :- victoire(Plateau, ('X')), Value=1000.
 value(Plateau, Value) :- victoire(Plateau, ('O')), Value='-1000'.
 value(Plateau, Value) :- Value=0.
 
+% renvoie le nombre de pions sur les colonnes pondérés par la position
+% (plus fort au milieu)
+value_col(Plateau, N, Value) :- Plateau = [Colonne|Queue], N=7, Value=0, N is N-1.
 
-
+value_col(Plateau, N, Value) :- Plateau = [Colonne|Queue], N=6, length(Colonne, Long), Value+=Long,N is N-1 .
 
