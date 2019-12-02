@@ -30,14 +30,23 @@ testPlateau(Plateau,Couleur,Etat):- Etat = 0.
 
 
 
-listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- eq(Couche,Profondeur), 
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- eq(Couche,Profondeur), pair(Couche),
                         enregistrerCoup(1,Plateau,Couleur,N1), testPlateau(N1,Couleur,E1), L1=[E1],
                         enregistrerCoup(2,Plateau,Couleur,N2), testPlateau(N2,Couleur,E2),append(L1,[E2],L2),
                         enregistrerCoup(3,Plateau,Couleur,N3), testPlateau(N3,Couleur,E3),append(L2,[E3],L3),
                         enregistrerCoup(4,Plateau,Couleur,N4), testPlateau(N4,Couleur,E4),append(L3,[E4],L4),
                         enregistrerCoup(5,Plateau,Couleur,N5), testPlateau(N5,Couleur,E5),append(L4,[E5],L5),
                         enregistrerCoup(6,Plateau,Couleur,N6), testPlateau(N6,Couleur,E6),append(L5,[E6],L6),
-                        enregistrerCoup(7,Plateau,Couleur,N7), testPlateau(N7,Couleur,E7),append(L6,[E7],Liste), !.
+                        enregistrerCoup(7,Plateau,Couleur,N7), testPlateau(N7,Couleur,E7),append(L6,[E7],Liste).
+
+listeValeur(Plateau,Couleur,Couche,Profondeur,Liste):- eq(Couche,Profondeur), \+pair(Couche), adversaire(Couleur,Adv),
+                        enregistrerCoup(1,Plateau,Adv,N1), testPlateau(N1,Couleur,E1), L1=[E1],
+                        enregistrerCoup(2,Plateau,Adv,N2), testPlateau(N2,Couleur,E2),append(L1,[E2],L2),
+                        enregistrerCoup(3,Plateau,Adv,N3), testPlateau(N3,Couleur,E3),append(L2,[E3],L3),
+                        enregistrerCoup(4,Plateau,Adv,N4), testPlateau(N4,Couleur,E4),append(L3,[E4],L4),
+                        enregistrerCoup(5,Plateau,Adv,N5), testPlateau(N5,Couleur,E5),append(L4,[E5],L5),
+                        enregistrerCoup(6,Plateau,Adv,N6), testPlateau(N6,Couleur,E6),append(L5,[E6],L6),
+                        enregistrerCoup(7,Plateau,Adv,N7), testPlateau(N7,Couleur,E7),append(L6,[E7],Liste).
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,L1):- 
                                                         \+pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
