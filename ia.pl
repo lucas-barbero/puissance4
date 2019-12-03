@@ -90,14 +90,14 @@ jouerTourIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 jouerTourIA(_,B):- egalite(B), write("Egalite").
 
 jouerTourIA('O',B) :-
-                    setProfondeur(B,4,NP),
+                    setProfondeur(B,5,NP),
                     listeValeur(B,'O',1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourIA('X',NB).
 
 jouerTourIA('X',B) :-
-                    setProfondeur(B,4,NP),
+                    setProfondeur(B,5,NP),
                     listeValeur(B,'X',1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'X',NC),
                     afficherplateau(NC),
@@ -108,13 +108,13 @@ jouerTourIAJoueur('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 jouerTourIAJoueur(_,B):- egalite(B), write("Egalite").
 
 jouerTourIAJoueur('O',B) :-
-                    
+                    setProfondeur(B,5,NP),
                     listeValeur(B,'O',1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('X',NB).
 jouerTourIAJoueur('X',B) :-
-                    
+                    setProfondeur(B,5,NP),
                     listeValeur(B,'X',1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'X',NB),
                     afficherplateau(NB),
