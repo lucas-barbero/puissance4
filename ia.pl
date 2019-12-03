@@ -120,6 +120,7 @@ jouerCoupIA(Plateau,Heuristiques,Couleur,NewPlateau) :-  maxListe(Heuristiques,M
   %setProfondeur(Plateau,P,NP)
   %On peut rencontrer des problème de mémoire, si les colonnes du milieux sont pleines, on peut baisser la Profondeur des calculs.
 setProfondeur(Plateau,P,NP) :-
+
     nth1(5,Plateau,L5), length(L5,I5), I5 > 5, nth1(4,Plateau,L3), length(L3,I3), I3 > 5, nth1(3,Plateau,L4), length(L4,I4), I4 > 5, NP is P-1.
   %Sinon on laisse la même.
 setProfondeur(Plateau,P,NP) :- NP is P.    
@@ -206,7 +207,53 @@ puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourJoueurIA('X',[[],[],[],[],[],[],[]]),
                afficherplateau([[],[],[],[],[],[],[]]).
 
+matrice_poids([[3,4,5,5,4,3],[4,6,8,8,6,4],[5,8,11,11,8,5],[7,10,13,13,10,7],[5,8,11,11,8,5],[4,6,8,8,6,4],[3,4,5,5,4,3]]).
 
+heuristique(Plateau, Couleur, NumColonne, Value) :-
+                   FacteurDeuxCases is 2,
+                   FacteurTroisCases is 5,
+                   verif2CasesVerticales(Plateau, Couleur, NumColonne, Value1),
+                   verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
+                   Value is ((Value1 * FacteurDeuxCases) + (Value2 * FacteurTroisCases)),
+                   write(Value).
+
+verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
+                   nth1(NumColonne,Plateau,Colonne),
+                   append(Colonne,[Couleur],NouvelleColonne),
+                   length(NouvelleColonne,Taille),
+                   Taille2 is Taille-1,
+                   Taille2 > 0,
+                   nth1(Taille2,NouvelleColonne,Item),
+                   Item == Couleur,
+                   pasJetonEnDessous(NouvelleColonne,Couleur,Taille2),
+                   Taille2+3 =< 6, Value = 1, !.
+
+verif2CasesVerticales(_,_,_,Value) :- Value =0.
+
+
+verif3CasesVerticales(Plateau, Couleur, NumColonne, Value) :-
+                   nth1(NumColonne,Plateau,Colonne),
+                   append(Colonne,[Couleur],NouvelleColonne),
+                   length(NouvelleColonne,Taille),
+                   TaillePrecedente is Taille-1,
+                   TaillePrecedente > 1,
+                   nth1(TaillePrecedente,Colonne,Item),
+                   Item == Couleur,
+                   SousTailleDeux is TaillePrecedente-1,
+                   nth1(SousTailleDeux,Colonne,Item2),
+                   Item2 == Couleur,
+                   pasJetonEnDessous(Colonne,Couleur,SousTailleDeux),
+                   TaillePrecedente+2 =< 6, Value = 1, !.
+
+verif3CasesVerticales(_,_,_,Value) :- Value =0.
+
+
+pasJetonEnDessous(_,_,Taille) :- Taille == 1, !.
+pasJetonEnDessous(Colonne,Couleur,Taille) :-
+                   Taille >= 2,
+                   EnDessous is Taille-1,
+                   nth1(EnDessous,Colonne,Item2),
+                   Couleur \= Item2.
 
 verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
                    nth1(NumColonne,Plateau, Colonne),
@@ -257,4 +304,32 @@ estSousListeIncr(SousListe, Ligne, Incr) :-
                    \+estSousListe(SousListe,Ligne),
                    Incr is 0.
 
+verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   nth1(NumColonne,Plateau, Colonne),
+                   length(Colonne, Length),
+                   genererLigne(Length, Plateau, Ligne),
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+
+verif3CasesHorizontaleRec1(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,'-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec2(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,J,'-'],Ligne,Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec3(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-',J,J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 1.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   \+estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 0.
 
