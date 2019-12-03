@@ -59,19 +59,19 @@ testerCoup(C,Plateau,Couleur,NewPlateau):- NewPlateau = Plateau.
 
 
 
-    %listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques)
+    %listeValeur(Plateau,Couleur,Cout,Couche,Profondeur,Heuristiques)
     %Algorithme MaxMin pour trouver le coup optimal en prévoyant les prochains coup des deux adversaires et déduire le meilleur coup a jouer maintenant.
 
   %Important si on atteint une situation où l'on perd, l'Heuristique de ce coup est de -1000. On ne va pas voir les coups suivants.
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
+listeValeur(Plateau,Couleur,_,Couche,Profondeur,Heuristiques):-
                     testPlateau(Plateau,Couleur,E1), E1==1000, Heuristiques=[E1].
 
   %De même si on atteint une situation où l'on gagne, l'Heuristique de ce coup est de 1000. On ne va pas voir les coups suivants.
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
+listeValeur(Plateau,Couleur,_,Couche,Profondeur,Heuristiques):-
                     testPlateau(Plateau,Couleur,E1), E1 == -1000, Heuristiques=[E1].
 
   %Si on atteint la Couche Maximal, on ne cherche pas à voir les coups suivants, on évalue les Plateaux les plus 'profond'.
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
+listeValeur(Plateau,Couleur,Cout,Couche,Profondeur,Heuristiques):-
                     Couche==Profondeur,
                     testPlateau(Plateau,Couleur,E1), Heuristiques=[E1].
 
@@ -82,27 +82,27 @@ listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
   %On définit que c'est nous qui jouons en suivant, donc tester coup pour les coups impairs seront avec notre couleur.
   %On prend le min des coup lié à ce que fera notre coup car l'adversaire prendra le coup qui nous est le moins favorable.
   %On créé une liste avec les Heuristiques lier à chacun des coups que l'on va jouer.
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
+listeValeur(Plateau,Couleur,_,Couche,Profondeur,Heuristiques):-
                                                         \+pair(Couche), C1 is Couche + 1,
-    testerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
-    testerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
-    testerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
-    testerCoup(4,Plateau,Couleur,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), minListe(L4,M4),append(Li3,[M4],Li4),
-    testerCoup(5,Plateau,Couleur,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), minListe(L5,M5),append(Li4,[M5],Li5),
-    testerCoup(6,Plateau,Couleur,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), minListe(L6,M6),append(Li5,[M6],Li6),
-    testerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Heuristiques), !.
+    testerCoup(1,Plateau,Couleur,N1), listeValeur(N1,Couleur,1,C1,Profondeur,L1), minListe(L1,M1),Li1=[M1],
+    testerCoup(2,Plateau,Couleur,N2), listeValeur(N2,Couleur,2,C1,Profondeur,L2), minListe(L2,M2),append(Li1,[M2],Li2),
+    testerCoup(3,Plateau,Couleur,N3), listeValeur(N3,Couleur,3,C1,Profondeur,L3), minListe(L3,M3),append(Li2,[M3],Li3),
+    testerCoup(4,Plateau,Couleur,N4), listeValeur(N4,Couleur,4,C1,Profondeur,L4), minListe(L4,M4),append(Li3,[M4],Li4),
+    testerCoup(5,Plateau,Couleur,N5), listeValeur(N5,Couleur,5,C1,Profondeur,L5), minListe(L5,M5),append(Li4,[M5],Li5),
+    testerCoup(6,Plateau,Couleur,N6), listeValeur(N6,Couleur,6,C1,Profondeur,L6), minListe(L6,M6),append(Li5,[M6],Li6),
+    testerCoup(7,Plateau,Couleur,N7), listeValeur(N7,Couleur,7,C1,Profondeur,L7), minListe(L7,M7),append(Li6,[M7],Heuristiques), !.
 
   %Lorsque le coup est pair ce sera le tour de l'adversaire, on définit dont la couleur joué sur celle de l'adversaire.
   %On récupère le max des valeurs de plateau possible après son jeux, car on jouera le coup qui nous est le plus favorable.
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
+listeValeur(Plateau,Couleur,_,Couche,Profondeur,Heuristiques):-
                                                         pair(Couche), C1 is Couche + 1, adversaire(Couleur,Adv),
-    testerCoup(1,Plateau,Adv,N1), listeValeur(N1,Couleur,C1,Profondeur,L1), maxListe(L1,M1),Li1=[M1],
-    testerCoup(2,Plateau,Adv,N2), listeValeur(N2,Couleur,C1,Profondeur,L2), maxListe(L2,M2),append(Li1,[M2],Li2),
-    testerCoup(3,Plateau,Adv,N3), listeValeur(N3,Couleur,C1,Profondeur,L3), maxListe(L3,M3),append(Li2,[M3],Li3),
-    testerCoup(4,Plateau,Adv,N4), listeValeur(N4,Couleur,C1,Profondeur,L4), maxListe(L4,M4),append(Li3,[M4],Li4),
-    testerCoup(5,Plateau,Adv,N5), listeValeur(N5,Couleur,C1,Profondeur,L5), maxListe(L5,M5),append(Li4,[M5],Li5),
-    testerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
-    testerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Heuristiques), !.
+    testerCoup(1,Plateau,Adv,N1), listeValeur(N1,Couleur,1,C1,Profondeur,L1), maxListe(L1,M1),Li1=[M1],
+    testerCoup(2,Plateau,Adv,N2), listeValeur(N2,Couleur,2,C1,Profondeur,L2), maxListe(L2,M2),append(Li1,[M2],Li2),
+    testerCoup(3,Plateau,Adv,N3), listeValeur(N3,Couleur,3,C1,Profondeur,L3), maxListe(L3,M3),append(Li2,[M3],Li3),
+    testerCoup(4,Plateau,Adv,N4), listeValeur(N4,Couleur,4,C1,Profondeur,L4), maxListe(L4,M4),append(Li3,[M4],Li4),
+    testerCoup(5,Plateau,Adv,N5), listeValeur(N5,Couleur,5,C1,Profondeur,L5), maxListe(L5,M5),append(Li4,[M5],Li5),
+    testerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,6,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
+    testerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,7,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Heuristiques), !.
 
   %jouerCoup(N,Plateau,Couleur,NewPlateau)
   %On va jouer le coup qui a l'Heuristique la plus forte, si le coup en possible.
@@ -138,7 +138,7 @@ jouerTourIA('O',B) :-
                     %Réglage sur la Profondeur
                     setProfondeur(B,5,NP),
                     %On évalue les coups possibles
-                    listeValeur(B,'O',1,NP,Heuristiques),
+                    listeValeur(B,'O',0,1,NP,Heuristiques),
                     %On joue le meilleur
                     jouerCoupIA(B,Heuristiques,'O',NB),
                     %On affiche
@@ -150,7 +150,7 @@ jouerTourIA('X',B) :-
                     %Réglage sur la Profondeur
                     setProfondeur(B,5,NP),
                     %On évalue les coups possibles
-                    listeValeur(B,'X',1,NP,Heuristiques),
+                    listeValeur(B,'X',0,1,NP,Heuristiques),
                     %On joue le meilleur
                     jouerCoupIA(B,Heuristiques,'X',NC),
                     %On affiche
@@ -168,13 +168,13 @@ jouerTourIAJoueur(_,B):- egalite(B), write("Egalite").
 
 jouerTourIAJoueur('O',B) :-
                     setProfondeur(B,5,NP),
-                    listeValeur(B,'O',1,NP,Heuristiques),
+                    listeValeur(B,'O',0,1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('X',NB).
 jouerTourIAJoueur('X',B) :-
                     setProfondeur(B,5,NP),
-                    listeValeur(B,'X',1,NP,Heuristiques),
+                    listeValeur(B,'X',0,1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'X',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('O',NB).
