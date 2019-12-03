@@ -180,7 +180,8 @@ verif3CasesVerticales(Plateau, Couleur, NumColonne) :-
                    pasJetonEnDessous(Colonne,Couleur,Taille2),
                    Taille+2 =< 6 .
 
-
+verif2CasesDiagonale(Plateau,Couleur,NumColonne) :- diag
+                   .
 
 
 
