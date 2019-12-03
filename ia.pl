@@ -81,7 +81,7 @@ jouerCoupIA(Plateau,Heuristiques,Couleur,NewPlateau) :-  maxListe(Heuristiques,M
 
 setProfondeur(Plateau,P,NP) :-
      nth1(4,Plateau,L1), length(L1,I1), I1 > 5, nth1(3,Plateau,L2), length(L2,I2), I2 >5,nth1(5,Plateau,L3), length(L3,I3), I3 > 5, NP is P - 2.
-setProfondeur(Plateau,P,NP) :- NP is P.    
+setProfondeur(Plateau,P,NP) :- NP is P.
 
 jouerTourIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
 jouerTourIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
@@ -130,7 +130,7 @@ jouerTourJoueurIA('O',B) :- repeat,
 							enregistrerCoup(C,B,'O', NB),
 							afficherplateau(NB),
 							jouerTourIAJoueur('O',NB).
-							
+
 jouerTourJoueurIA('X',B) :- repeat,
 							lireColonne('X',C),
 							verifierCoup(C,B),
@@ -142,9 +142,60 @@ jouerTourJoueurIA('X',B) :- repeat,
 %lancement du jeu
 puissance4IA:- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourIA('X',[[],[],[],[],[],[],[]]).
-			   
+
 puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourJoueurIA('X',[[],[],[],[],[],[],[]]),
                afficherplateau([[],[],[],[],[],[],[]]).
+
+
+
+verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   nth1(NumColonne,Plateau, Colonne),
+                   length(Colonne, Length),
+                   genererLigne(Length, Plateau, Ligne),
+                   verif2CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+
+
+verif2CasesHorizontaleRec1(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-','-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesHorizontaleRec2(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,'-','-'],Ligne,Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesHorizontaleRec3(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-',J,'-'],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec5(Ligne, J, Cpt1),
+                   estSousListeIncr(['-',J,'-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesHorizontaleRec5(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec6(Ligne, J, Cpt1),
+                   estSousListeIncr(['-',J,J,'-'],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesHorizontaleRec6(Ligne, J, Cpt):-
+                   estSousListe(['-','-',J,J],Ligne),
+                   Cpt is 1.
+
+verif2CasesHorizontaleRec6(Ligne, J, Cpt):-
+                   \+estSousListe(['-','-',J,J],Ligne),
+                   Cpt is 0.
+
+
+estSousListeIncr(SousListe, Ligne, Incr) :-
+                   estSousListe(SousListe,Ligne),
+                   Incr is 1.
+
+estSousListeIncr(SousListe, Ligne, Incr) :-
+                   \+estSousListe(SousListe,Ligne),
+                   Incr is 0.
 
 
