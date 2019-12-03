@@ -24,7 +24,7 @@ jouerTourIARand(_,B):- egalite(B), write("Egalite").
 
 jouerTourIARand('O',B) :-
                     setProfondeur(B,5,NP),
-                    listeValeur(B,'O',1,NP,Heuristiques),
+                    listeValeur(B,'O',0,1,NP,Heuristiques),
                     jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourIARand('X',NB).
