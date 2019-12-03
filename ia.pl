@@ -40,7 +40,7 @@ value_col(Plateau, 1, Value) :- Value = 0 .
 testPlateau(Plateau,Couleur,Etat):- victoire(Plateau,Couleur), Etat = 1000.
     % Etat -> -1000 dans ce Plateau l'adversaire (Adv) gagne, donc, on perd !
 testPlateau(Plateau,Couleur,Etat):- adversaire(Couleur,Adv), victoire(Plateau,Adv), Etat = -1000.
-    % Etat -> Dans tout les autres cas on évalue la valeur du Plateau grâce à la fonction d'évalutation. 
+    % Etat -> Dans tout les autres cas on évalue la valeur du Plateau grâce à la fonction d'évalutation.
 testPlateau(Plateau,Couleur,Etat):- value_col(Plateau, 7, Value), Etat = Value.
 
 
@@ -123,7 +123,7 @@ setProfondeur(Plateau,P,NP) :-
 
     nth1(5,Plateau,L5), length(L5,I5), I5 > 5, nth1(4,Plateau,L3), length(L3,I3), I3 > 5, nth1(3,Plateau,L4), length(L4,I4), I4 > 5, NP is P-1.
   %Sinon on laisse la même.
-setProfondeur(Plateau,P,NP) :- NP is P.    
+setProfondeur(Plateau,P,NP) :- NP is P.
 
 
 
@@ -214,7 +214,10 @@ heuristique(Plateau, Couleur, NumColonne, Value) :-
                    FacteurTroisCases is 5,
                    verif2CasesVerticales(Plateau, Couleur, NumColonne, Value1),
                    verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
-                   Value is ((Value1 * FacteurDeuxCases) + (Value2 * FacteurTroisCases)),
+                   verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible1),
+                   verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible2),
+                   Value is ((Value1 + NbVictoirePossible1) * FacteurDeuxCases +
+                            (Value2 + NbVictoirePossible2) * FacteurTroisCases),
                    write(Value).
 
 verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
