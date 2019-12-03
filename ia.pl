@@ -107,6 +107,10 @@ setProfondeur(Plateau,Profondeur,NewProfondeur) :- nth1(4,Plateau,L), length(L,I
     nth1(2,Plateau,L2), length(L2,I2), I2 > 5, nth1(6,Plateau,L3), length(L3,I3), I1 > 5, Profondeur > 3, NewProfondeur is Profondeur - 1.
 setProfondeur(Plateau,Profondeur,NewProfondeur) :- NewProfondeur is Profondeur.
 
+jouerTourIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
+jouerTourIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
+jouerTourIA(_,B):- egalite(B), write("Egalite").
+
 jouerTourIA('O',B) :-
                     setProfondeur(B,5,P),
                     listeValeur(B,'O',1,P,Liste),
@@ -114,12 +118,17 @@ jouerTourIA('O',B) :-
                     afficherplateau(NB),
                     jouerTourIA('X',NB).
 
-jouerTourIA('X',B1) :-
+jouerTourIA('X',B) :-
                     setProfondeur(B,5,P),
-                    listeValeur(B1,'X',1,P,Liste),
-                    jouerCoupIA(B1,Liste,'X',NC),
+                    listeValeur(B,'X',1,P,Liste),
+                    jouerCoupIA(B,Liste,'X',NC),
                     afficherplateau(NC),
                     jouerTourIA('O',NC).
+
+jouerTourIAJoueur('X',B):- victoire(B,'O'), write("Victoire du joueur O").
+jouerTourIAJoueur('O',B):- victoire(B,'X'), write("Victoire du joueur X").
+jouerTourIAJoueur(_,B):- egalite(B), write("Egalite").
+
 jouerTourIAJoueur('O',B) :-
 				    setProfondeur(B,5,P),
                     listeValeur(B,'O',1,P,Liste),
@@ -132,7 +141,11 @@ jouerTourIAJoueur('X',B) :-
                     jouerCoupIA(B,Liste,'X',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('O',NB).
-					
+
+jouerTourJoueurIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
+jouerTourJoueurIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
+jouerTourJoueurIA(_,B):- egalite(B), write("Egalite").
+
 jouerTourJoueurIA('O',B) :- repeat,
 							lireColonne('O',C),
 							verifierCoup(C,B),
@@ -153,7 +166,5 @@ puissance4IA:- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourIA('X',[[],[],[],[],[],[],[]]).
 			   
 puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
-               jouerTourJoueurIA('X',[[],[],[],[],[],[],[]]),
-               afficherplateau([[],[],[],[],[],[],[]]).
-
+               jouerTourJoueurIA('X',[[],[],[],[],[],[],[]]).
 

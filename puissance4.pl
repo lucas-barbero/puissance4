@@ -45,7 +45,7 @@ verifierCoup(C,B) :-     (
         length(L,I),
         I < 6
      -> true
-     ;  writeln('Coup impossible place inssuffisante'),
+     ;  writeln('Coup impossible place insuffisante'),
         afficherplateau(B),
         fail
     ).
