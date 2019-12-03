@@ -83,7 +83,7 @@ jouerCoupIA(Plateau,Heuristiques,Couleur,NewPlateau) :-  maxListe(Heuristiques,M
 
 setProfondeur(Plateau,P,NP) :-
     nth1(5,Plateau,L5), length(L5,I5), I5 > 5, nth1(4,Plateau,L3), length(L3,I3), I3 > 5, nth1(3,Plateau,L4), length(L4,I4), I4 > 5, NP is P-1.
-setProfondeur(Plateau,P,NP) :- NP is P.    
+setProfondeur(Plateau,P,NP) :- NP is P.
 
 jouerTourIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
 jouerTourIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
@@ -197,5 +197,35 @@ estSousListeIncr(SousListe, Ligne, Incr) :-
 estSousListeIncr(SousListe, Ligne, Incr) :-
                    \+estSousListe(SousListe,Ligne),
                    Incr is 0.
+
+
+verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   nth1(NumColonne,Plateau, Colonne),
+                   length(Colonne, Length),
+                   genererLigne(Length, Plateau, Ligne),
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+
+verif3CasesHorizontaleRec1(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,'-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec2(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,J,'-'],Ligne,Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec3(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-',J,J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 1.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   \+estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 0.
 
 
