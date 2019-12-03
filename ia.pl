@@ -304,4 +304,32 @@ estSousListeIncr(SousListe, Ligne, Incr) :-
                    \+estSousListe(SousListe,Ligne),
                    Incr is 0.
 
+verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   nth1(NumColonne,Plateau, Colonne),
+                   length(Colonne, Length),
+                   genererLigne(Length, Plateau, Ligne),
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+
+verif3CasesHorizontaleRec1(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,'-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec2(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,J,'-'],Ligne,Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec3(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-',J,J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 1.
+
+verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
+                   \+estSousListe(['-',J,J,J],Ligne),
+                   Cpt is 0.
 
