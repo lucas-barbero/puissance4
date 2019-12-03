@@ -149,37 +149,51 @@ puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
 
 matrice_poids([[3,4,5,5,4,3],[4,6,8,8,6,4],[5,8,11,11,8,5],[7,10,13,13,10,7],[5,8,11,11,8,5],[4,6,8,8,6,4],[3,4,5,5,4,3]]).
 
-% heuristique(plateau, couleur, numColonne, value) :-
-% verif2cases(plateau, couleur, numColonne).
+heuristique(Plateau, Couleur, NumColonne, Value) :-
+                   FacteurDeuxCases is 2,
+                   FacteurTroisCases is 5,
+                   verif2CasesVerticales(Plateau, Couleur, NumColonne, Value1),
+                   verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
+                   Value is ((Value1 * FacteurDeuxCases) + (Value2 * FacteurTroisCases)),
+                   write(Value).
 
-verif2CasesVerticales(Plateau, Couleur, NumColonne) :-
+verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
                    nth1(NumColonne,Plateau,Colonne),
-                   length(Colonne,Taille),
-                   Taille > 0,
-                   nth1(Taille,Colonne,Item),
+                   append(Colonne,[Couleur],NouvelleColonne),
+                   length(NouvelleColonne,Taille),
+                   Taille2 is Taille-1,
+                   Taille2 > 0,
+                   nth1(Taille2,NouvelleColonne,Item),
                    Item == Couleur,
-                   pasJetonEnDessous(Colonne,Couleur,Taille),
-                   Taille+3 =< 6 .
+                   pasJetonEnDessous(NouvelleColonne,Couleur,Taille2),
+                   Taille2+3 =< 6, Value = 1, !.
 
-pasJetonEnDessous(Colonne,Couleur,Taille) :- Taille == 1, !.
+verif2CasesVerticales(_,_,_,Value) :- Value =0.
+
+
+verif3CasesVerticales(Plateau, Couleur, NumColonne, Value) :-
+                   nth1(NumColonne,Plateau,Colonne),
+                   append(Colonne,[Couleur],NouvelleColonne),
+                   length(NouvelleColonne,Taille),
+                   TaillePrecedente is Taille-1,
+                   TaillePrecedente > 1,
+                   nth1(TaillePrecedente,Colonne,Item),
+                   Item == Couleur,
+                   SousTailleDeux is TaillePrecedente-1,
+                   nth1(SousTailleDeux,Colonne,Item2),
+                   Item2 == Couleur,
+                   pasJetonEnDessous(Colonne,Couleur,SousTailleDeux),
+                   TaillePrecedente+2 =< 6, Value = 1, !.
+
+verif3CasesVerticales(_,_,_,Value) :- Value =0.
+
+
+pasJetonEnDessous(_,_,Taille) :- Taille == 1, !.
 pasJetonEnDessous(Colonne,Couleur,Taille) :-
                    Taille >= 2,
                    EnDessous is Taille-1,
                    nth1(EnDessous,Colonne,Item2),
                    Couleur \= Item2.
-
-verif3CasesVerticales(Plateau, Couleur, NumColonne) :-
-                   nth1(NumColonne,Plateau,Colonne),
-                   length(Colonne,Taille),
-                   Taille > 1,
-                   nth1(Taille,Colonne,Item),
-                   Item == Couleur,
-                   Taille2 is Taille-1,
-                   nth1(Taille2,Colonne,Item2),
-                   Item2 == Couleur,
-                   pasJetonEnDessous(Colonne,Couleur,Taille2),
-                   Taille+2 =< 6 .
-
 
 
 
