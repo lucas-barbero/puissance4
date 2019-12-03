@@ -31,22 +31,16 @@ value_col(Plateau, 2, Value) :- Plateau = [Colonne|Queue], length(Colonne, Long)
 value_col(Plateau, 1, Value) :- Value = 0 .
 
 
-
+testPlateau(Plateau,Couleur,Etat):- Plateau == [[4,0,4]], Etat = 0, !.
 testPlateau(Plateau,Couleur,Etat):- victoire(Plateau,Couleur), Etat = 1000.
 testPlateau(Plateau,Couleur,Etat):- adversaire(Couleur,Adv), victoire(Plateau,Adv), Etat = -1000.
 testPlateau(Plateau,Couleur,Etat):- value_col(Plateau, 7, Value), Etat = Value.
 
-testerCoup(C,Plateau,Couleur,NewPlateau):- nth1(C,Plateau,L), length(L,I), I < 7, enregistrerCoup(C,Plateau,Couleur,NewPlateau).
-testerCoup(C,Plateau,Couleur,NewPlateau):- NewPlateau = [4,0,4].
-
+testerCoup(C,Plateau,Couleur,NewPlateau):- nth1(C,Plateau,L), length(L,I), I < 6, enregistrerCoup(C,Plateau,Couleur,NewPlateau).
+testerCoup(C,Plateau,Couleur,NewPlateau):- NewPlateau = [[4,0,4]].
 %Donne la liste des valeurs des coups suivants
 
-
-listeValeur(_,_,_,_,Heuristiques):- false,
-                    Heuristiques=[-1000], !.
-
-listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
-                   Plateau == [4,0,4], Heuristiques=[-1000], !.
+listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):- Plateau == [[4,0,4]], Heuristiques = [0].
 
 listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
                     eq(Couche,Profondeur),
@@ -73,14 +67,16 @@ listeValeur(Plateau,Couleur,Couche,Profondeur,Heuristiques):-
     testerCoup(6,Plateau,Adv,N6), listeValeur(N6,Couleur,C1,Profondeur,L6), maxListe(L6,M6),append(Li5,[M6],Li6),
     testerCoup(7,Plateau,Adv,N7), listeValeur(N7,Couleur,C1,Profondeur,L7), maxListe(L7,M7),append(Li6,[M7],Heuristiques), !.
 
-
+jouerCoup(N,Plateau,Couleur,NewPlateau) :- nth1(N,Plateau,L), length(L,I), I < 6, enregistrerCoup(N,Plateau,Couleur,NewPlateau), !.
+jouerCoup(N,Plateau,Couleur,NewPlateau) :- N1 is N+1, jouerCoup(N1,Plateau,Couleur,NewPlateau).
+jouerCoup(N,Plateau,Couleur,NewPlateau) :- write("FIN").
 
 %Pour chaque coup regarder listeValeur (Plateau,Couleur,1,5,HeuristiquesHeuristiques) Profondeur 5 c''est bien au dessus sest trop lent et 1 car on veut le coup d''apres
 
-jouerCoupIA(Plateau,Heuristiques,Couleur,NewPlateau) :-  maxListe(Heuristiques,M),  nth1(N,Heuristiques,M),  enregistrerCoup(N,Plateau,Couleur,NewPlateau), !.
+jouerCoupIA(Plateau,Heuristiques,Couleur,NewPlateau) :-  maxListe(Heuristiques,M),  nth1(N,Heuristiques,M),  jouerCoup(N,Plateau,Couleur,NewPlateau), !.
 
 setProfondeur(Plateau,P,NP) :-
-     nth1(4,Plateau,L1), length(L1,I1), I1 > 5, nth1(3,Plateau,L2), length(L2,I2), I2 >5,nth1(5,Plateau,L3), length(L3,I3), I3 > 5, NP is P - 2.
+    nth1(3,Plateau,L2), length(L2,I2), I2 > 3,nth1(4,Plateau,L3), length(L3,I3), I3 > 3, NP is P-2.
 setProfondeur(Plateau,P,NP) :- NP is P.    
 
 jouerTourIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
@@ -88,18 +84,16 @@ jouerTourIA('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 jouerTourIA(_,B):- egalite(B), write("Egalite").
 
 jouerTourIA('O',B) :-
-                    write(B),
-                    setProfondeur(B,4,P),
-                    listeValeur(B,'O',1,P,Liste),
-                    jouerCoupIA(B,Liste,'O',NB),
+                
+                    listeValeur(B,'O',1,3,Heuristiques),
+                    jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourIA('X',NB).
 
 jouerTourIA('X',B) :-
-                    write(B),
-                    setProfondeur(B,4,P),
-                    listeValeur(B,'X',1,P,Liste),
-                    jouerCoupIA(B,Liste,'X',NC),
+                
+                    listeValeur(B,'X',1,3,Heuristiques),
+                    jouerCoupIA(B,Heuristiques,'X',NC),
                     afficherplateau(NC),
                     jouerTourIA('O',NC).
 
@@ -108,15 +102,15 @@ jouerTourIAJoueur('O',B):- victoire(B,'X'), write("Victoire du joueur X").
 jouerTourIAJoueur(_,B):- egalite(B), write("Egalite").
 
 jouerTourIAJoueur('O',B) :-
-				    setProfondeur(B,5,P),
-                    listeValeur(B,'O',1,P,Liste),
-                    jouerCoupIA(B,Liste,'O',NB),
+                    setProfondeur(Plateau,5,NP),
+                    listeValeur(B,'O',1,NP,Heuristiques),
+                    jouerCoupIA(B,Heuristiques,'O',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('X',NB).
 jouerTourIAJoueur('X',B) :-
-				    setProfondeur(B,5,P),
-                    listeValeur(B,'X',1,P,Liste),
-                    jouerCoupIA(B,Liste,'X',NB),
+                    setProfondeur(Plateau,5,NP),
+                    listeValeur(B,'X',1,NP,Heuristiques),
+                    jouerCoupIA(B,Heuristiques,'X',NB),
                     afficherplateau(NB),
                     jouerTourJoueurIA('O',NB).
 
