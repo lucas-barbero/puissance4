@@ -42,7 +42,8 @@ testPlateau(TypeHeuristique,Plateau,Couleur,_,Etat):- victoire(Plateau,Couleur),
     % Etat -> -1000 dans ce Plateau l'adversaire (Adv) gagne, donc, on perd !
 testPlateau(TypeHeuristique,Plateau,Couleur,_,Etat):- adversaire(Couleur,Adv), victoire(Plateau,Adv), Etat = -1000.
     % Etat -> Dans tout les autres cas on évalue la valeur du Plateau grâce à la fonction d'évalutation choisie.
-testPlateau(TypeHeuristique,Plateau,Couleur,Colonne,Etat):- TypeHeuristique==1, heuristique(Plateau, Couleur, Colonne , Value), Etat = Value.
+testPlateau(TypeHeuristique,Plateau,Couleur,Colonne,Etat):- TypeHeuristique==1, heuristiqueDefensive(Plateau, Couleur, Colonne , Value), Etat = Value.
+testPlateau(TypeHeuristique,Plateau,Couleur,Colonne,Etat):- TypeHeuristique==3, heuristiqueOffensive(Plateau, Couleur, Colonne , Value), Etat = Value.
 testPlateau(TypeHeuristique,Plateau,Couleur,Colonne,Etat):- TypeHeuristique==2, value_col(Plateau, Couleur, Colonne , Value), Etat = Value.
 
 
@@ -125,7 +126,7 @@ jouerCoupIA(TypeHeuristique,Plateau,Profondeur,Couleur,NewPlateau) :- listeValeu
   %On peut rencontrer des problème de mémoire, si les colonnes du milieux sont pleines, on peut baisser la Profondeur des calculs.
 setProfondeur(Plateau,P,NP) :-
 
-    nth1(5,Plateau,L5), length(L5,I5), I5 > 5, nth1(4,Plateau,L3), length(L3,I3), I3 > 5, nth1(3,Plateau,L4), length(L4,I4), I4 > 5, NP is P-1.
+    nth1(5,Plateau,L5), length(L5,I5), I5 > 4, nth1(4,Plateau,L3), length(L3,I3), I3 > 4, nth1(3,Plateau,L4), length(L4,I4), I4 > 4, NP is P-1.
   %Sinon on laisse la même.
 setProfondeur(Plateau,P,NP) :- NP is P.
 
@@ -144,7 +145,7 @@ jouerTourIA('O',B) :-
                     setProfondeur(B,5,NP),
                     %On évalue les coups possibles
                     %On joue le meilleur
-                    jouerCoupIA(1,B,NP,'O',NB),
+                    jouerCoupIA(3,B,NP,'O',NB),
                     %On affiche
                     afficherplateau(NB),
                     %On fait jouer l'adversaire
@@ -221,15 +222,47 @@ puissance4JoueurIA:- afficherplateau([[],[],[],[],[],[],[]]),
 
 matrice_poids([[3,4,5,5,4,3],[4,6,8,8,6,4],[5,8,11,11,8,5],[7,10,13,13,10,7],[5,8,11,11,8,5],[4,6,8,8,6,4],[3,4,5,5,4,3]]).
 
-heuristique(Plateau, Couleur, NumColonne, Value) :-
-                   FacteurDeuxCases is 2,
-                   FacteurTroisCases is 5,
+heuristiqueDefensive(Plateau, Couleur, NumColonne, Value) :-
+                   FacteurDeuxCases is 1,
+                   FacteurTroisCases is 10,
+                   adversaire(Couleur,Adv),
+                   %Coup d'attaque
                    verif2CasesVerticales(Plateau, Couleur, NumColonne, Value1),
                    verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
                    verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible1),
                    verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible2),
+                   %Coup bloquant
+                   FacteurBloquantDeux is 50,
+                   FacteurBloquantTrois is 100,
+                   verif2CasesVerticales(Plateau, Adv, NumColonne, Bloque1),
+                   verif2CasesHorizontales(Plateau, Adv, NumColonne, Bloque2),
+                   verif3CasesVerticales(Plateau, Adv, NumColonne, Bloque3),
+                   verif3CasesHorizontales(Plateau, Adv, NumColonne, Bloque4),
                    Value is ((Value1 + NbVictoirePossible1) * FacteurDeuxCases +
-                            (Value2 + NbVictoirePossible2) * FacteurTroisCases).
+                             (Value2 + NbVictoirePossible2) * FacteurTroisCases +
+                             (Bloque1 + Bloque2) * FacteurBloquantDeux +
+                             (Bloque3 + Bloque4) * FacteurBloquantTrois ).
+
+heuristiqueOffensive(Plateau, Couleur, NumColonne, Value) :-
+                   FacteurDeuxCases is 20,
+                   FacteurTroisCases is 50,
+                   adversaire(Couleur,Adv),
+                   %Coup d'attaque
+                   verif2CasesVerticales(Plateau, Couleur, NumColonne, Value1),
+                   verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
+                   verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible1),
+                   verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible2),
+                   %Coup bloquant
+                   FacteurBloquantDeux is 1,
+                   FacteurBloquantTrois is 10,
+                   verif2CasesVerticales(Plateau, Adv, NumColonne, Bloque1),
+                   verif2CasesHorizontales(Plateau, Adv, NumColonne, Bloque2),
+                   verif3CasesVerticales(Plateau, Adv, NumColonne, Bloque3),
+                   verif3CasesHorizontales(Plateau, Adv, NumColonne, Bloque4),
+                   Value is ((Value1 + NbVictoirePossible1) * FacteurDeuxCases +
+                             (Value2 + NbVictoirePossible2) * FacteurTroisCases +
+                             (Bloque1 + Bloque2) * FacteurBloquantDeux +
+                             (Bloque3 + Bloque4) * FacteurBloquantTrois ).
 
 verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
                    nth1(NumColonne,Plateau,NouvelleColonne),
