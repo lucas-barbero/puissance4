@@ -381,7 +381,6 @@ verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
                    Cpt is 0.
 
 
-
 diagonaleEnColonne(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
 						length(ColonneInser, LColonne),
 						N1 is max(1, NColonne-6+LColonne),
@@ -400,12 +399,12 @@ diagonaleEnColonne(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInse
 						length(PremiereColonne, Long),
 						Row is LColonne+(NColonne-N1),
 						Long < Row,
-						nth1(NColonne-N1, PremiereColonne, L),
+						nth1(1, ['-'], L),
 						N2 is N1+1,
 						diagonaleEnColonne2(B, N2, NColonne, LF).
 
 
-diagonaleEnColonne2(B, N, NColonne, [L|LF]) :-	N < NColonne+6,
+diagonaleEnColonne2(B, N, NColonne, [L|LF]) :-	N =< NColonne+(7-NColonne),
 						niemeElement(NColonne, B, ColonneInser),
 						niemeElement(N, B, PremiereColonne),
 						length(ColonneInser, LColonne),
@@ -413,6 +412,17 @@ diagonaleEnColonne2(B, N, NColonne, [L|LF]) :-	N < NColonne+6,
 						Row is LColonne+(NColonne-N),
 						Long >= Row,
 						nth1(Row, PremiereColonne, L),
+						N2 is N+1,
+						diagonaleEnColonne2(B, N2, NColonne, LF).
+
+diagonaleEnColonne2(B, N, NColonne, [L|LF]) :-	N =< NColonne+(7-NColonne),
+						niemeElement(NColonne, B, ColonneInser),
+						niemeElement(N, B, PremiereColonne),
+						length(ColonneInser, LColonne),
+						length(PremiereColonne,Long),
+						Row is LColonne+(NColonne-N),
+						Long < Row,
+						nth1(1, PremiereColonne, L),
 						N2 is N+1,
 						diagonaleEnColonne2(B, N2, NColonne, LF).
 
@@ -428,10 +438,10 @@ diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneIn
 						write("bonjour"),
 						length(PremiereColonne, Long),
 						Row is LColonne+(N1-NColonne),
-						Long > Row,
+						Long >= Row,
 						nth1(Row, PremiereColonne, L),
 						N2 is N1-1,
-						diagonaleEnColonne2(B, N2, NColonne, LF).
+						diagonaleEnColonne2SO(B, N2, NColonne, LF).
 
 diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
 						length(ColonneInser, LColonne),
@@ -439,24 +449,34 @@ diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneIn
 						write(N1),
 						niemeElement(N1, B, PremiereColonne),
 						write("bonjour"),
-
 						length(PremiereColonne, Long),
 						Row is LColonne+(N1-NColonne),
-						Long =< Row,
+						Long < Row,
 						K is N1-NColonne,
-						nth1(K, PremiereColonne, L),
+						nth1(1, ['-'], L),
 						N2 is N1-1,
 						diagonaleEnColonne2SO(B, N2, NColonne, LF).
 
 
-diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	N > NColonne-6,
-						niemeElement(NColonne, B, ColonneInser),
+diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
+							length(ColonneInser, LColonne),	
+						N >= max(1, NColonne-(LColonne-1)),
 						niemeElement(N, B, PremiereColonne),
-						length(ColonneInser, LColonne),
-						length(PremiereColonne,Long),
+						length(PremiereColonne, Long),
 						Row is LColonne+(N-NColonne),
 						Long >= Row,
 						nth1(Row, PremiereColonne, L),
+						N2 is N-1,
+						diagonaleEnColonne2SO(B, N2, NColonne, LF).
+
+diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
+							length(ColonneInser, LColonne),	
+						N >= max(1, NColonne-(LColonne-1)),
+						niemeElement(N, B, PremiereColonne),
+						length(PremiereColonne, Long),
+						Row is LColonne+(N-NColonne),
+						Long < Row,
+						nth1(1, ['-'], L),
 						N2 is N-1,
 						diagonaleEnColonne2SO(B, N2, NColonne, LF).
 
