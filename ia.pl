@@ -231,6 +231,8 @@ heuristiqueDefensive(Plateau, Couleur, NumColonne, Value) :-
                    verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
                    verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible1),
                    verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible2),
+                   verif2CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible3),
+                   verif3CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible4),
                    %Coup bloquant
                    FacteurBloquantDeux is 50,
                    FacteurBloquantTrois is 100,
@@ -238,10 +240,13 @@ heuristiqueDefensive(Plateau, Couleur, NumColonne, Value) :-
                    verif2CasesHorizontales(Plateau, Adv, NumColonne, Bloque2),
                    verif3CasesVerticales(Plateau, Adv, NumColonne, Bloque3),
                    verif3CasesHorizontales(Plateau, Adv, NumColonne, Bloque4),
-                   Value is ((Value1 + NbVictoirePossible1) * FacteurDeuxCases +
-                             (Value2 + NbVictoirePossible2) * FacteurTroisCases +
-                             (Bloque1 + Bloque2) * FacteurBloquantDeux +
-                             (Bloque3 + Bloque4) * FacteurBloquantTrois ).
+                   verif2CasesDiagonale(Plateau, Adv, NumColonne, Bloque5),
+                   verif3CasesDiagonale(Plateau, Adv, NumColonne, Bloque6),
+
+                   Value is ((Value1 + NbVictoirePossible1+NbVictoirePossible3) * FacteurDeuxCases +
+                             (Value2 + NbVictoirePossible2+NbVictoirePossible4) * FacteurTroisCases +
+                             (Bloque1 + Bloque2+ Bloque5) * FacteurBloquantDeux +
+                             (Bloque3 + Bloque4+ Bloque6) * FacteurBloquantTrois ).
 
 heuristiqueOffensive(Plateau, Couleur, NumColonne, Value) :-
                    FacteurDeuxCases is 20,
@@ -252,6 +257,9 @@ heuristiqueOffensive(Plateau, Couleur, NumColonne, Value) :-
                    verif3CasesVerticales(Plateau, Couleur, NumColonne, Value2),
                    verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible1),
                    verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible2),
+                   verif2CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible3),
+                   verif3CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible4),
+
                    %Coup bloquant
                    FacteurBloquantDeux is 1,
                    FacteurBloquantTrois is 10,
@@ -259,10 +267,14 @@ heuristiqueOffensive(Plateau, Couleur, NumColonne, Value) :-
                    verif2CasesHorizontales(Plateau, Adv, NumColonne, Bloque2),
                    verif3CasesVerticales(Plateau, Adv, NumColonne, Bloque3),
                    verif3CasesHorizontales(Plateau, Adv, NumColonne, Bloque4),
-                   Value is ((Value1 + NbVictoirePossible1) * FacteurDeuxCases +
-                             (Value2 + NbVictoirePossible2) * FacteurTroisCases +
-                             (Bloque1 + Bloque2) * FacteurBloquantDeux +
-                             (Bloque3 + Bloque4) * FacteurBloquantTrois ).
+                   verif2CasesDiagonale(Plateau, Adv, NumColonne, Bloque5),
+                   verif3CasesDiagonale(Plateau, Adv, NumColonne, Bloque6),
+
+                   Value is ((Value1 + NbVictoirePossible1+NbVictoirePossible3) * FacteurDeuxCases +
+                             (Value2 + NbVictoirePossible2+NbVictoirePossible4) * FacteurTroisCases +
+                             (Bloque1 + Bloque2+ Bloque5) * FacteurBloquantDeux +
+                             (Bloque3 + Bloque4+ Bloque6) * FacteurBloquantTrois ).
+
 
 verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
                    nth1(NumColonne,Plateau,NouvelleColonne),
@@ -380,6 +392,65 @@ verif3CasesHorizontaleRec4(Ligne, J, Cpt):-
                    \+estSousListe(['-',J,J,J],Ligne),
                    Cpt is 0.
 
+verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   nth1(NumColonne,Plateau, Colonne),
+                   length(Colonne, Length),
+                   genererLigne(Length, Plateau, Ligne),
+                   verif2CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible),!.
+
+verif2CasesDiagonaleSO(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                    diagonaleEnColonneSO(Plateau, NumColonne, Ligne),
+                    verif2CasesDiagonaleRec1(Ligne, Couleur, NbVictoirePossible),!.
+
+
+verif2CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                    diagonaleEnColonne(Plateau, NumColonne, Ligne),
+                    verif2CasesDiagonaleRec1(Ligne, Couleur, NbVictoirePossible),!.
+
+verif2CasesDiagonaleRec1(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-','-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesDiagonaleRec2(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   estSousListeIncr([J,J,'-','-'],Ligne,Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesDiagonaleRec3(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   estSousListeIncr([J,'-',J,'-'],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesDiagonaleRec4(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec5(Ligne, J, Cpt1),
+                   estSousListeIncr(['-',J,'-',J],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesDiagonaleRec5(Ligne, J, Cpt):-
+                   verif2CasesHorizontaleRec6(Ligne, J, Cpt1),
+                   estSousListeIncr(['-',J,J,'-'],Ligne, Incr),
+                   Cpt is Cpt1+Incr.
+
+verif2CasesDiagonaleRec6(Ligne, J, Cpt):-
+                   estSousListe(['-','-',J,J],Ligne),
+                   Cpt is 1.
+
+verif2CasesDiagonaleRec6(Ligne, J, Cpt):-
+                   \+estSousListe(['-','-',J,J],Ligne),
+                   Cpt is 0.
+
+
+verif3CasesDiagonale(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   diagonaleEnColonne(Plateau, NumColonne, Ligne),
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible),!.
+
+verif3CasesDiagonaleSO(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
+                   diagonaleEnColonneSO(Plateau, NumColonne, Ligne),
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible),!.
+
+
+
 
 diagonaleEnColonne(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
 						length(ColonneInser, LColonne),
@@ -422,7 +493,7 @@ diagonaleEnColonne2(B, N, NColonne, [L|LF]) :-	N =< NColonne+(7-NColonne),
 						length(PremiereColonne,Long),
 						Row is LColonne+(NColonne-N),
 						Long < Row,
-						nth1(1, PremiereColonne, L),
+						nth1(1, ['-'], L),
 						N2 is N+1,
 						diagonaleEnColonne2(B, N2, NColonne, LF).
 
@@ -433,9 +504,7 @@ diagonaleEnColonne2(B, N, _, []).
 diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
 						length(ColonneInser, LColonne),
 						N1 is min(7, NColonne+6-LColonne),
-						write(N1),
 						niemeElement(N1, B, PremiereColonne),
-						write("bonjour"),
 						length(PremiereColonne, Long),
 						Row is LColonne+(N1-NColonne),
 						Long >= Row,
@@ -446,9 +515,7 @@ diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneIn
 diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
 						length(ColonneInser, LColonne),
 						N1 is min(7, NColonne+6-LColonne),
-						write(N1),
 						niemeElement(N1, B, PremiereColonne),
-						write("bonjour"),
 						length(PremiereColonne, Long),
 						Row is LColonne+(N1-NColonne),
 						Long < Row,
@@ -459,7 +526,7 @@ diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneIn
 
 
 diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
-							length(ColonneInser, LColonne),	
+							length(ColonneInser, LColonne),
 						N >= max(1, NColonne-(LColonne-1)),
 						niemeElement(N, B, PremiereColonne),
 						length(PremiereColonne, Long),
@@ -470,7 +537,7 @@ diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	niemeElement(NColonne, B, Colon
 						diagonaleEnColonne2SO(B, N2, NColonne, LF).
 
 diagonaleEnColonne2SO(B, N, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneInser),
-							length(ColonneInser, LColonne),	
+							length(ColonneInser, LColonne),
 						N >= max(1, NColonne-(LColonne-1)),
 						niemeElement(N, B, PremiereColonne),
 						length(PremiereColonne, Long),
