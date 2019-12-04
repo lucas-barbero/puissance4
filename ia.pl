@@ -153,7 +153,7 @@ jouerTourIA('O',B) :-
 
 jouerTourIA('X',B) :-
                     %Réglage sur la Profondeur
-                    setProfondeur(B,5,NP),
+                    setProfondeur(1,5,NP),
                     %On évalue les coups possibles
                     %On joue le meilleur
                     jouerCoupIA(2,B,NP,'X',NC),
@@ -179,7 +179,7 @@ jouerTourIAJoueur('O',B) :-
                     %On affiche
                     afficherplateau(NB),
                     %On fait jouer l'adversaire
-                    jouerTourIA('X',NB).
+                    jouerTourJoueurIA('X',NB).
 
 jouerTourIAJoueur('X',B) :-
                     %Réglage sur la Profondeur
@@ -190,7 +190,7 @@ jouerTourIAJoueur('X',B) :-
                     %On affiche
                     afficherplateau(NC),
                     %On fait jouer l'adversaire
-                    jouerTourIA('O',NC).
+                    jouerTourJoueurIA('O',NC).
 
 
 jouerTourJoueurIA('X',B):- victoire(B,'O'), write("Victoire du joueur O").
