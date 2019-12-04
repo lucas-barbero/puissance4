@@ -37,6 +37,6 @@ jouerTourIARand(TypeHeuristique,'X',B) :-
 
 
 %lancement du jeu typeHeuristique : 1 : avancee - 2: milieu defensive
-%Joueur O : Random Joueur X : MinMax
+%Joueur X : Random Joueur O : MinMax
 puissance4IAvsIARand(TypeHeuristique):- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourIARand(TypeHeuristique,'X',[[],[],[],[],[],[],[]]).
