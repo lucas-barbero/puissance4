@@ -40,3 +40,36 @@ jouerTourIARand('X',B) :-
 %lancement du jeu
 puissance4IAvsIARand:- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourIARand('X',[[],[],[],[],[],[],[]]).
+
+%-------- plusieurs jeux sans affichage pour les statistiques ----------
+
+
+jouerTourIARandSansAffichage('X',B,NbVicX,NbVicO,NbVicX,NewNbO):- victoire(B,'O'), write("Victoire du joueur O\n"), NewNbO is NbVicO + 1.
+jouerTourIARandSansAffichage('O',B,NbVicX,NbVicO,NewNbX,NbVicO):- victoire(B,'X'), write("Victoire du joueur X\n"), NewNbX is NbVicX + 1.
+jouerTourIARandSansAffichage(_,B,NbVicX,NbVicO,NbVicX,NbVicO):- egalite(B), write("Egalite\n").
+
+jouerTourIARandSansAffichage('O',B, NbVicX,NbVicO,NbVicX,NbVicO) :-
+                    setProfondeur(B,5,NP),
+                    listeValeur(B,'O',0,1,NP,Heuristiques),
+                    jouerCoupIA(B,Heuristiques,'O',NB),
+                    jouerTourIARandSansAffichage('X',NB,NbVicX,NbVicO,NewX,NewO).
+
+jouerTourIARandSansAffichage('X',B, NbVicX,NbVicO,NbVicX,NbVicO) :-
+                    choisirColonneAleatoireValide(C,B),
+                    enregistrerCoup(C,B,'X',NB),
+                    jouerTourIARandSansAffichage('O',NB,NbVicX,NbVicO,NewX,NewO).
+
+
+
+%lancement du jeu
+puissance4IAvsIARandStat:- write('Début des parties\n'),
+                          joueJeux(0,0,ResVicX,ResVicO),
+                          write('--- Resultats ---\n'),
+                          write('Nb victoires X : '),
+                          write(ResVicX),
+                          write(', Nb victoires O : \n').
+
+joueJeux(NbVicX,NbVicO,NbVicX,NbVicO) :- NbVicX > 49.
+joueJeux(NbVicX,NbVicO,NbVicX,NbVicO) :- NbVicO > 49.
+joueJeux(NbVicX,NbVicO,ResVicX,ResVicO) :- jouerTourIARandSansAffichage('X',[[],[],[],[],[],[],[]],NbVicX,NbVicO,NewX,NewO),
+                                          joueJeux(NewX,NewO,ResVicX,ResVicO).
