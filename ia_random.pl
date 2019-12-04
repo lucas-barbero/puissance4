@@ -18,25 +18,25 @@ choisirColonneAleatoireValide(C,B) :- choisirColonneAleatoireValide(C,B).
 
 % Jeux IA vs random
 
-jouerTourIARand('X',B):- victoire(B,'O'), write("Victoire du joueur O").
-jouerTourIARand('O',B):- victoire(B,'X'), write("Victoire du joueur X").
-jouerTourIARand(_,B):- egalite(B), write("Egalite").
+jouerTourIARand(_,'X',B):- victoire(B,'O'), write("Victoire du joueur O").
+jouerTourIARand(_,'O',B):- victoire(B,'X'), write("Victoire du joueur X").
+jouerTourIARand(_,_,B):- egalite(B), write("Egalite").
 
-jouerTourIARand('O',B) :-
+jouerTourIARand(TypeHeuristique,'O',B) :-
                     setProfondeur(B,5,NP),
-                    listeValeur(B,'O',0,1,NP,Heuristiques),
-                    jouerCoupIA(B,Heuristiques,'O',NB),
+                    jouerCoupIA(TypeHeuristique,B,NP,'O',NB),
                     afficherplateau(NB),
-                    jouerTourIARand('X',NB).
+                    jouerTourIARand(TypeHeuristique,'X',NB).
 
-jouerTourIARand('X',B) :-
+jouerTourIARand(TypeHeuristique,'X',B) :-
                     choisirColonneAleatoireValide(C,B),
                     enregistrerCoup(C,B,'X',NB),
                     afficherplateau(NB),
-                    jouerTourIARand('O',NB).
+                    jouerTourIARand(TypeHeuristique,'O',NB).
 
 
 
-%lancement du jeu
-puissance4IAvsIARand:- afficherplateau([[],[],[],[],[],[],[]]),
-               jouerTourIARand('X',[[],[],[],[],[],[],[]]).
+%lancement du jeu typeHeuristique : 1 : avancee - 2: milieu defensive
+%Joueur O : Random Joueur X : MinMax
+puissance4IAvsIARand(TypeHeuristique):- afficherplateau([[],[],[],[],[],[],[]]),
+               jouerTourIARand(TypeHeuristique,'X',[[],[],[],[],[],[],[]]).
