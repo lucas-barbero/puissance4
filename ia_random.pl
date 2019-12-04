@@ -39,7 +39,7 @@ jouerTourIARand(TypeHeuristique,'X',B) :-
 puissance4IAvsIARand(TypeHeuristique):- afficherplateau([[],[],[],[],[],[],[]]),
                jouerTourIARand(TypeHeuristique,'X',[[],[],[],[],[],[],[]]).
 
-
+%         IA VS RAND
 %-------- plusieurs jeux sans affichage pour les statistiques ----------
 
 
@@ -61,13 +61,43 @@ jouerTourIARandSansAffichage(TypeHeuristique,'X',B, NbVicX,NbVicO,NbVicX,NbVicO)
 
 %lancement du jeu
 puissance4IAvsIARandStat(TypeHeuristique):- write('Début des parties\n'),
-                          joueJeux(TypeHeuristique,0,0,ResVicX,ResVicO),
+                          joueJeuxIAvsRand(TypeHeuristique,0,0,ResVicX,ResVicO),
                           write('--- Resultats ---\n'),
                           write('Nb victoires X : '),
                           write(ResVicX),
                           write(', Nb victoires O : \n').
 
-joueJeux(TypeHeuristique,NbVicX,NbVicO,NbVicX,NbVicO) :- NbVicX > 10, !.
-joueJeux(TypeHeuristique,NbVicX,NbVicO,NbVicX,NbVicO) :- NbVicO > 10, !.
-joueJeux(TypeHeuristique,NbVicX,NbVicO,ResVicX,ResVicO) :- jouerTourIARandSansAffichage(TypeHeuristique,'X',[[],[],[],[],[],[],[]],NbVicX,NbVicO,NewX,NewO),
-                                          joueJeux(TypeHeuristique,NewX,NewO,ResVicX,ResVicO).
+
+joueJeuxIAvsRand(TypeHeuristique,NbVicX,NbVicO,ResVicX,ResVicO) :- NbVicX < 10, NbVicO < 10, jouerTourIARandSansAffichage(TypeHeuristique,'X',[[],[],[],[],[],[],[]],NbVicX,NbVicO,NewX,NewO),
+                                          joueJeuxIAvsRand(TypeHeuristique,NewX,NewO,ResVicX,ResVicO),!.
+joueJeuxIAvsRand(TypeHeuristique,NbVicX,NbVicO,NbVicX,NbVicO).
+%         IA VS IA
+%-------- plusieurs jeux sans affichage pour les statistiques ----------
+jouerTourIAvsIASansAffichage('X',B,NbVicX,NbVicO,NbVicX,NewNbO):- victoire(B,'O'), write("Victoire du joueur O\n"), NewNbO is NbVicO + 1.
+jouerTourIAvsIASansAffichage('O',B,NbVicX,NbVicO,NewNbX,NbVicO):- victoire(B,'X'), write("Victoire du joueur X\n"), NewNbX is NbVicX + 1.
+jouerTourIAvsIASansAffichage(_,B,NbVicX,NbVicO,NbVicX,NbVicO):- egalite(B), write("Egalite\n").
+
+jouerTourIAvsIASansAffichage('O',B, NbVicX,NbVicO,NbVicX,NbVicO) :-
+                    setProfondeur(B,5,NP),
+                    jouerCoupIA(1,B,NP,'O',NB),
+                    jouerTourIAvsIASansAffichage('X',NB,NbVicX,NbVicO,NewX,NewO).
+
+jouerTourIAvsIASansAffichage('X',B, NbVicX,NbVicO,NbVicX,NbVicO) :-
+                    setProfondeur(B,5,NP),
+                    jouerCoupIA(2,B,NP,'X',NB),
+                    jouerTourIAvsIASansAffichage('O',NB,NbVicX,NbVicO,NewX,NewO).
+
+
+
+%lancement du jeu
+puissance4IAvsIA():- write('Début des parties\n'),
+                          joueJeuxIAvsIA(0,0,ResVicX,ResVicO),
+                          write('--- Resultats ---\n'),
+                          write('Nb victoires X : '),
+                          write(ResVicX),
+                          write(', Nb victoires O : \n').
+
+
+joueJeuxIAvsIA(NbVicX,NbVicO,ResVicX,ResVicO) :- NbVicX < 10, NbVicO < 10, jouerTourIAvsIASansAffichage('X',[[],[],[],[],[],[],[]],NbVicX,NbVicO,NewX,NewO),
+                                          joueJeuxIAvsIA(NewX,NewO,ResVicX,ResVicO),!.
+joueJeuxIAvsIA(NbVicX,NbVicO,NbVicX,NbVicO).
