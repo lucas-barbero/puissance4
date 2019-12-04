@@ -221,8 +221,8 @@ heuristique(Plateau, Couleur, NumColonne, Value) :-
                    write(Value).
 
 verif2CasesVerticales(Plateau, Couleur, NumColonne,Value) :-
-                   nth1(NumColonne,Plateau,Colonne),
-                   append(Colonne,[Couleur],NouvelleColonne),
+                   nth1(NumColonne,Plateau,NouvelleColonne),
+                   %append(Colonne,[Couleur],NouvelleColonne),
                    length(NouvelleColonne,Taille),
                    Taille2 is Taille-1,
                    Taille2 > 0,
@@ -236,8 +236,8 @@ verif2CasesVerticales(_,_,_,Value) :- Value =0.
 
 verif3CasesVerticales(Plateau, Couleur, NumColonne, Value) :-
                    nth1(NumColonne,Plateau,Colonne),
-                   append(Colonne,[Couleur],NouvelleColonne),
-                   length(NouvelleColonne,Taille),
+                   %append(Colonne,[Couleur],NouvelleColonne),
+                   length(Colonne,Taille),
                    TaillePrecedente is Taille-1,
                    TaillePrecedente > 1,
                    nth1(TaillePrecedente,Colonne,Item),
@@ -262,7 +262,7 @@ verif2CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
                    nth1(NumColonne,Plateau, Colonne),
                    length(Colonne, Length),
                    genererLigne(Length, Plateau, Ligne),
-                   verif2CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+                   verif2CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible),!.
 
 
 verif2CasesHorizontaleRec1(Ligne, J, Cpt):-
@@ -311,20 +311,20 @@ verif3CasesHorizontales(Plateau, Couleur, NumColonne, NbVictoirePossible) :-
                    nth1(NumColonne,Plateau, Colonne),
                    length(Colonne, Length),
                    genererLigne(Length, Plateau, Ligne),
-                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible).
+                   verif3CasesHorizontaleRec1(Ligne, Couleur, NbVictoirePossible),!.
 
 verif3CasesHorizontaleRec1(Ligne, J, Cpt):-
-                   verif2CasesHorizontaleRec2(Ligne, J, Cpt1),
+                   verif3CasesHorizontaleRec2(Ligne, J, Cpt1),
                    estSousListeIncr([J,J,'-',J],Ligne, Incr),
                    Cpt is Cpt1+Incr.
 
 verif3CasesHorizontaleRec2(Ligne, J, Cpt):-
-                   verif2CasesHorizontaleRec3(Ligne, J, Cpt1),
+                   verif3CasesHorizontaleRec3(Ligne, J, Cpt1),
                    estSousListeIncr([J,J,J,'-'],Ligne,Incr),
                    Cpt is Cpt1+Incr.
 
 verif3CasesHorizontaleRec3(Ligne, J, Cpt):-
-                   verif2CasesHorizontaleRec4(Ligne, J, Cpt1),
+                   verif3CasesHorizontaleRec4(Ligne, J, Cpt1),
                    estSousListeIncr([J,'-',J,J],Ligne, Incr),
                    Cpt is Cpt1+Incr.
 
@@ -395,7 +395,7 @@ diagonaleEnColonneSO(B, NColonne, [L|LF]) :-	niemeElement(NColonne, B, ColonneIn
 						write(N1),
 						niemeElement(N1, B, PremiereColonne),
 						write("bonjour"),
-						
+
 						length(PremiereColonne, Long),
 						Row is LColonne+(N1-NColonne),
 						Long =< Row,
